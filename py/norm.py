@@ -487,10 +487,10 @@ class QP_to_linear_l_2(object):
             c = -2*A.T*b        => b = -inv(A.T)*c/2.0
 
         """
-        Q_ = svdr(Q,1e-12)
-        assert Q_.r is Q.shape[0]
-        A =  np.diag(np.sqrt(Q_.s)) * Q_.rrs.T / math.sqrt(2)
-        b = -np.linalg.inv( A.T ) * c / 2.0
+        Q = svdr(Q)
+        assert Q.r == Q.m and Q.r == Q.n
+        A =  np.diag(np.sqrt(Q.s)) * Q.U_range().T / math.sqrt(2)
+        b = -svdr( A.T ).pinv() * c / 2.0
         self.A = A
         self.b = b
     def solve(self):
@@ -503,9 +503,9 @@ class QP_to_linear_l_2(object):
         Q = rand_pos_def_matrix(n)
         c = np.asmatrix(np.random.rand(n,1))        
         A,b = QP_to_linear_l_2(Q,c).solve()
-        print( "QP_to_linear_l_2 error = " +\
+        print( "_"*80+"\nQP_to_linear_l_2 error = " +\
             str(np.linalg.norm(Q/2.0  - A.T * A )\
-                + np.linalg.norm( c + 2 * A.T * b )))
+                + np.linalg.norm( c + 2 * A.T * b ))+'\n'+"_"*80)
 
 def test():
 

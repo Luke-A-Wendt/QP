@@ -15,6 +15,9 @@ misc.test()
 import svm
 svm.test()
 
+from svdr import svdr 
+svdr.test()
+
 # import nn 
 # nn.test()
 
