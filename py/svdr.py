@@ -26,9 +26,9 @@ class svdr(object):
                     break
 
         self.mat_ = A
-        self.S_ = "not computed"
-        self.approx_ = "not computed"
-        self.pinv_ = "not computed"
+        self.S_ = None
+        self.approx_ = None
+        self.pinv_ = None
 
     def s_pos(self):
         return self.s[0:self.r]
@@ -39,7 +39,7 @@ class svdr(object):
     def mat(self):
         return self.mat_
     def S(self):
-        if str(self.S_) == "not computed":
+        if self.S_ is None:
             S = np.diag(self.s) # sorted largest to smallest
             if self.m < self.n:
                 temp = np.zeros((self.m,self.n-self.m))
@@ -51,7 +51,7 @@ class svdr(object):
                         ( S, temp ), axis = 0 )
         return self.S_    
     def S_pos(self):
-        if str(self.S_) == "not computed":
+        if self.S_ is None:
             self.S()
         return self.S_[0:self.r,0:self.r]
     def U_range(self):
@@ -63,7 +63,7 @@ class svdr(object):
     def V_null(self):
         return self.V[:,self.r:self.n]
     def pinv(self):
-        if str(self.pinv_) == "not computed":
+        if self.pinv_ is None:
             if self.r != 0:
                 S_pos_inv = np.diag(np.reciprocal(self.s_pos()))
                 self.pinv_ = self.V_range() * S_pos_inv * self.U_range().H
@@ -71,7 +71,7 @@ class svdr(object):
                 self.pinv_ = np.asmatrix(np.zeros((n,m)))
         return self.pinv_
     def approx(self):
-        if str(self.approx_) == "not computed":
+        if self.approx_ is None:
             self.approx_ = self.U_range() * self.S_pos() * self.V_range().H
         return self.approx_
 
@@ -112,4 +112,3 @@ class svdr(object):
 
         # test reapproxion
         print(np.linalg.norm(A-A_svdr.approx()))
-
