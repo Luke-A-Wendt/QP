@@ -26,7 +26,7 @@
 
 \end{abstract}
 \clearpage
-\tableofcontents
+\tableofcontents 
 \clearpage
 \section{Notation}
 
@@ -95,7 +95,7 @@
             1&\text{if $x\in\dom$} \\ 
             0&\text{else}
             }\right.
-            &&\text{}
+            &&\bin(i=j)=:\delta_{ij}
             \\\\
         \ind(x\in\dom)&=-\log(\bin(x\in\dom))\\
         &=\left\{
@@ -103,14 +103,17 @@
             0&\text{if $x\in\dom$} \\ 
             \infty&\text{else}
             }\right.
-            &&\text{}\\\\
-        (x)_+&=\left\{
+            &&\text{}
+        \\\\
+        \hinge(x)&=x\:\bin(x>0)\\
+        &=
+        \left\{
             \arr{
             x&\text{if $x>0$} \\ 
             0&\text{else}
-            }\right.&&\text{hinge}
-        \\\\
-        \dz(x,a,b)&=(x-b)_+-(-x-a)_+,\quad\text{for}\quad a<0<b
+            }\right.&&                
+            \\\\
+        \dz(x,a,b)&=\hinge(x-b)-\hinge(-x-a),\quad\text{for}\quad a<0<b
         &&\text{}
         \\\\
         \sat(x,a,b)&=
@@ -132,7 +135,7 @@
     \begin{align*}
         f(x,c)&=f(x,-c,c),\\
         f(x)&=f(x,1).
-    \end{align*}   
+    \end{align*}
 
     \begin{figure}[b!]
         \centering
@@ -157,9 +160,23 @@
 
 \section{Introduction}
 
-\subsection{Polyherons}
+Figure \ref{fig:ml} depicts many of the common applications in machine learning.
+All of these applications can be framed as optimization problems.
+Ideally, optimization should be convex for reliable performance.
+Some of these optimization problems can be cast as \LP or \QP, e.g., many classical supervised learning problems,
+or they can be solved with iterative \LP or \QP methods, e.g, deep learning.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{./figs/np/ml.jpg}
+\caption{Machine Learning}
+\label{fig:ml}
+\end{figure}
+\clearpage
+
+\subsection{Polyhedrons}
 Polyheron sets are defined by
-\begin{align*}
+\begin{align}
     \poly := \left\{x\in\R^n \left|
             \arr{
             A_\ub x\leq b_\ub,\\
@@ -167,41 +184,40 @@ Polyheron sets are defined by
             x_\lb \leq x \leq x_\ub
             }
     \right\}\right.. 
-\end{align*}
-
+\end{align}
+\note{For $x\in\R^n$ and $y\in\R^n$, $x\leq y$ implies element-wise inequality.}\\
+\note{$x_\lb$ and $x_\ub$ can be absorbed into $A_\ub$ and $b_\ub$.}
 \subsection{\LP: Linear Programming}
 
     Linear optimization is formulated as \cite[p.~146]{bv_cvxbook} 
 
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad
         J
         &=
                 c^\tp x
-    \end{align*}
+    \end{align}
     \begin{align*}
-        \st\quad x\in\poly,
+        \st\quad x\in\poly.
     \end{align*}
-    \note{For $x\in\R^n$ and $y\in\R^n$, $x\leq y$ implies element-wise inequality.}\\
-    \note{$x_\lb$ and $x_\ub$ can be absorbed into $A_\ub$ and $b_\ub$.}\\
     The solver is called with
     \begin{align*}
-        x^* = \LP(c,\poly).\text{solve()}.
+        x^* = \LP(c,\poly).\text{solve()}. 
     \end{align*}
 
 \subsection{\QP: Quadratic Programming}
 
     Quadratic optimization is formulated as \cite[p.~152]{bv_cvxbook}  
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad
         J
         &=
                 \frac{1}{2} x^\tp Q x
             +
                 c^\tp x
-    \end{align*}
+    \end{align}
     \begin{align*}
-        \st\quad x\in\poly,
+        \st\quad x\in\poly.
     \end{align*}
     The solver is called with    
     \begin{align*}
@@ -218,35 +234,36 @@ Polyheron sets are defined by
         \label{fig:LPvsQP}%
     \end{figure}
 
-\clearpage
+
 
 \section{Linear p--Norms}
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=0.5\textwidth]{./figs/norm/lp.png}
+        \includegraphics[width=0.6\textwidth]{./figs/norm/lp.png}
         \caption{$\|\cdot\|_p = $ constant.}
         \label{fig:lp}
     \end{figure}
+    The definition and general properties of the p--norm are given in section \ref{sec:p_norm}.\\ 
     For $p\in\{1,2,\infty\}$, consider 
-    \begin{align*}
+    \begin{align}
             \min_{x\in\R^n}
         \quad
             J
         &=
             \|A x - b \|_p,
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad&x\in\poly.
     \end{align*}
 
-    The $\ell_p$ contours are depicted in Figure \ref{fig:lp}.
+    The $\ell_p$ contours are depicted in figure \ref{fig:lp}.
     The weighted linear p--norm is given by
 
-    \begin{align*}
-        \|Ax-b\|_{p,W}=\|W(Ax-b)\|_p.
-    \end{align*}
+    \begin{align}
+        \|Ax-b\|_{p|W}:=\|W(Ax-b)\|_p.
+    \end{align}
 
-    For $w_i>0$, a typical choice of weighting is
+    For $w_i\geq0$, a typical choice of weighting is
     \begin{align*}
         W=\diag\{w_i\}_{i=0}^{m-1}.
     \end{align*}
@@ -254,11 +271,11 @@ Polyheron sets are defined by
 \subsection{Linear 2--Norm}
 
     For $x\in\R^n$, 
-    \begin{align*}
+    \begin{align}
             \left\| x \right\|_2^2 
         :=
             \sum_{i=0}^{n-1} x_i^2.
-    \end{align*} 
+    \end{align} 
     For $A\in\R^{m\times n}$,
     \begin{align*}
             \min_{x\in\R^n}
@@ -292,43 +309,81 @@ Polyheron sets are defined by
     r &= \minus b^\tp b. 
     \end{align*}
 
-    \subsubsection{Weight}
+    \subsubsection{\QP to Linear 2-Norm}
+
+    For the constraint $x\in\poly$, consider
+
+    \begin{align*}
+        \min_{x\in\R^n}\quad J&=\frac{1}{2} x^\tp Q x + c^\tp x\\
+        &=\|Ax-b\|_2^2+r,
+    \end{align*}    
+
+    with    
+
+    \begin{align*}
+        Q&=\minus 2A^\tp A,\\\\
+        c&=-2A^\tp b.
+    \end{align*}
+
+    If $Q\in\sym^n_+$,
+    using SVD, the square root of $Q$
+    and its inverse can be computed with
+
+    \begin{align*}
+        Q^{1/2\minus}&=US^{1/2\minus} U^\tp,\\\\
+        Q^{-1/2}&=U S^{-1/2} U^\tp.
+    \end{align*}  
+
+    The linear 2-norm can be expressed as
+
+    \begin{align*}
+        A&=\minus\frac{1}{\sqrt{2}}Q^{1/2},\\\\
+        b&= -\frac{1}{\sqrt{2}}Q^{-1/2} c.
+    \end{align*}
+
+    \note{This choice of $A$ gives $A=A^\tp$.}\\
+    \note{The constant offset does not affect the solution.}
+
+    \subsubsection{Weighted Linear 2-Norm}
     For non--negative definite $M=W^\tp W$, 
 
     \begin{align*}
-        \|Ax-b\|_{2,W}^2 
+        \|Ax-b\|_{2|W}^2 
         &=\|W(Ax-b)\|_2^2\\
         &=(Ax-b)^\tp W^\tp W (Ax-b)\\
         &= (Ax-b)^\tp M (Ax-b)\\
         &= x^\tp A^\tp M A x - 2 b^\tp M A x + b^\tp M b,
     \end{align*}
+
     which gives
+
     \begin{align*}
-        Q&=\minus 2 A^\tp M A,\\
+        Q&=\minus 2 A^\tp M A,\\\\
         c&=-2A^\tp M b.
     \end{align*}
 
-    \subsubsection{Expectation}
+    \clearpage
+    \subsubsection{Expected Linear 2-Norm}
 
     Consider the addition of random variables.
     The expected linear 2--norm is given by
 
     \begin{align*}
-        \min_{x\in\R^n}\quad J&=\E{\|(A+\rand{A})(x+\rand{x})-(b+\rand{b})\|_{2,W}^2}
+        \min_{x\in\R^n}\quad J&=\E{\|(A+\rand{A})(x+\rand{x})-(b+\rand{b})\|_{2}^2}
     \end{align*}
     \begin{align*}
         \st\quad x\in\poly,
     \end{align*}
 
-    which, for non--negative definite $M=W^\tp W$, can be solved as the \QP
+    which can be solved as the \QP
 
     \begin{align*}
-        \min_{x\in\R^n}\quad J&=x^\tp\E{(A+\rand{A})^\tp M (A+\rand{A})}x\\
+        \min_{x\in\R^n}\quad J&=x^\tp\E{(A+\rand{A})^\tp  (A+\rand{A})}x\\
         &\quad+
-        2\E{(A+\rand{A})^\tp M ((A+\rand{A})\rand{x}-(b+\rand{b}))}^\tp x\\
+        2\E{(A+\rand{A})^\tp  ((A+\rand{A})\rand{x}-(b+\rand{b}))}^\tp x\\
         &\quad+
         \E{((A+\rand{A})\rand{x}
-        -(b+\rand{b}))^\tp M ((A+\rand{A})\rand{x}
+        -(b+\rand{b}))^\tp  ((A+\rand{A})\rand{x}
         -(b+\rand{b}))}\\\\
         &=\frac{1}{2}x^\tp Q x + c^\tp x + r
     \end{align*}  
@@ -337,81 +392,26 @@ Polyheron sets are defined by
     \end{align*}  
     where    
     \begin{align*}
-        Q   &=2A^\tp M A + 2A^\tp M \E{\rand{A}} + 2\E{\rand{A}^\tp} M A + 2\E{\rand{A}^\tp M \rand{A} },\\
+        Q   &=2A^\tp  A + 2A^\tp  \E{\rand{A}} + 2\E{\rand{A}}^\tp  A + 2\E{\rand{A}^\tp  \rand{A} },\\
         \\
         c&=
-        2\left(A^\tp MA\E{\rand{x}}
-        +A^\tp M\E{\rand{A}\rand{x}}
-        +\E{\rand{A}^\tp MA\rand{x}}
-        +\E{\rand{A}^\tp M\rand{A}\rand{x}}\right)\\
+        2\left(A^\tp A\E{\rand{x}}
+        +A^\tp \E{\rand{A}\rand{x}}
+        +\E{\rand{A}^\tp A\rand{x}}
+        +\E{\rand{A}^\tp \rand{A}\rand{x}}\right)\\
         &\quad
-        -2\left(A^\tp Mb
-        +\E{\rand{A}^\tp} Mb
-        +A^\tp M\E{\rand{b}}
-        +\E{\rand{A}^\tp M\rand{b}}\right),
+        -2\left(A^\tp b
+        +\E{\rand{A}}^\tp b
+        +A^\tp \E{\rand{b}}
+        +\E{\rand{A}^\tp \rand{b}}\right).
     \end{align*}
-    and
-    \begin{align*} 
-    \begin{array}{ll}
-            \vecf{\E{\rand{A}^\tp M \rand{A} }}^\tp
-                &=\vec{M}^\tp\E{\rand{A}\otimes \rand{A}} ,\\
-            \vecf{\E{\rand{A}^\tp MA\rand{x}}}^\tp
-                &=\vecf{MA}^\tp\E{\rand{A}\otimes \rand{x}},\\
-            \vecf{\E{\rand{A}^\tp M\rand{A}\rand{x}}}^\tp
-                &=\vec{M}^\tp\E{ \rand{A} \otimes \rand{A}\rand{x} },\\
-            \vecf{\E{\rand{A}^\tp M\rand{b}}}^\tp
-                &=\vec{M}^\tp\E{\rand{A} \otimes \rand{b}}.
-    \end{array}
-    \end{align*}
-
-    If the random variables are independent,
-
-    \begin{align*}
-        \begin{array}{ll}
-            \E{\rand{A}\otimes \rand{x}}
-                &=\E{\:\rand{A}\:}\otimes \E{\:\rand{x}\:},\\
-            \E{ \rand{A} \otimes \rand{A}\rand{x} }
-                &=\E{\rand{A}\otimes \rand{A}}\left(\:\eye_n\otimes \E{\rand{x}}\:\right),\\
-            \E{\rand{A} \otimes \rand{b}}
-                &=\E{\:\rand{A}\:} \otimes \E{\:\rand{b}\:}.
-        \end{array}
-    \end{align*}
-
-\clearpage
-
-\subsubsection{\QP to Linear 2-Norm}
-
-    For the constraint $x\in\poly$, consider
-    \begin{align*}
-        \min_{x\in\R^n}\quad J&=\frac{1}{2} x^\tp Q x + c^\tp x\\
-        &=\|Ax-b\|_2^2+r,
-    \end{align*}    
-    with    
-    \begin{align*}
-        Q&=\minus 2A^\tp A,\\
-        c&=-2A^\tp b.
-    \end{align*}
-    If $Q\in\sym^n_+$,
-    using SVD, the square root of $Q$
-    and its inverse can be computed with
-    \begin{align*}
-        Q^{1/2\minus}&=US^{1/2\minus} U^\tp,\\
-        Q^{-1/2}&=U S^{-1/2} U^\tp.
-    \end{align*}    
-    The linear 2-norm can be expressed as
-    \begin{align*}
-        A&=\minus\frac{1}{\sqrt{2}}Q^{1/2},\\
-        b&= -\frac{1}{\sqrt{2}}Q^{-1/2} c.
-    \end{align*}
-    \note{This choice of $A$ gives $A=A^\tp$.}\\
-    \note{The constant offset does not affect the solution.}
 
 \subsection{Linear 1--Norm}
 
     For $x\in\R^n$,
-    \begin{align*}
+    \begin{align}
         \left\|x\right\|_1 := \sum_{i=0}^{n-1} |x_i|.
-    \end{align*}
+    \end{align}
     For $A\in\R^{m\times n}$,
     \begin{align*}
         \min_{x\in\R^n}\quad J&= \|Ax-b\|_1
@@ -466,10 +466,10 @@ Polyheron sets are defined by
 \subsection{Linear Inf--Norm}
 
     For $x\in\R^n$,
-    \begin{align*}
+    \begin{align}
         \left\| x \right\|_\infty := \max_{i\in\Z[0,n-1]} |x_i|.
-    \end{align*}
-    For $A\in\R^{m\times n}$
+    \end{align}
+    For $A\in\R^{m\times n}$,
         \begin{align*}
             \min_{x\in\R^n}\quad J &= \|A x-b\|_\infty
         \end{align*}
@@ -620,7 +620,7 @@ which is a \QP with
     c&=- 2( A^\tp b + C^\tp d).
 \end{align*}
 
-\subsubsection{Linear inf--inf--Norm}
+\subsubsection{Linear Inf--Inf--Norm}
 
     For $A\in\R^{m\times n}$ and $C\in\R^{r\times n}$,
     \begin{align*}
@@ -1069,30 +1069,30 @@ which is a \QP with
 \subsection{Linear p--Norm Constraint} \label{sec:lin_p_norm}
 
 
-    For $A_i\in\R^{m_i\times n}$ and $t_i>0$, consider the problem
+    For $A_i\in\R^{m_i\times n}$, $p_i\in\{1,2,\infty\}$, and $t_i>0$, consider the problem
 
     \begin{align*}
         \min_{x\in\R^n} \quad J = f(x)
     \end{align*}
     \begin{align}
         \st\quad x&\in\poly,\nonumber\\
-        \|A_i&x-b_i\|_p\leq t_i.\label{eqn:p_norm_constraint}
+        \|A_i&x-b_i\|_{p_i}\leq t_i.\label{eqn:p_norm_constraint}
     \end{align}
 
     \begin{figure}[h!]
         \centering
-        \subfloat[1--norm]{{\includegraphics[width=0.25\textwidth]{./figs/norm/1_norm_constraint.png}}\label{fig:1_norm_constraint}}%
+        \subfloat[1--Norm]{{\includegraphics[width=0.25\textwidth]{./figs/norm/1_norm_constraint.png}}\label{fig:1_norm_constraint}}%
         \qquad
-        \subfloat[2--norm]{{\includegraphics[width=0.25\textwidth]{./figs/norm/2_norm_constraint.png}}\label{fig:2_norm_constraint}}%
+        \subfloat[2--Norm]{{\includegraphics[width=0.25\textwidth]{./figs/norm/2_norm_constraint.png}}\label{fig:2_norm_constraint}}%
         \qquad
-        \subfloat[inf--norm]{{\includegraphics[width=0.2\textwidth]{./figs/norm/inf_norm_constraint.png}}\label{fig:inf_norm_constraint}}%
+        \subfloat[Inf--Norm]{{\includegraphics[width=0.2\textwidth]{./figs/norm/inf_norm_constraint.png}}\label{fig:inf_norm_constraint}}%
         \caption{Comparison of p--norm inequality constraints}%
         \label{fig:LPvsQP}%
     \end{figure}
 
 \subsubsection{Linear 1--Norm Constraint}
 
-    For $p=1$, Equation [\ref{eqn:p_norm_constraint}] is equivalent to
+    For $p_i=1$, equation (\ref{eqn:p_norm_constraint}) is equivalent to
 
     \begin{align*}
         \min_{\{x,y_i\}\in\{\R^n,\R^{m_i}\}} \quad J =f(x)
@@ -1110,7 +1110,7 @@ which is a \QP with
     If $f(x)$ is quadratic, this problem is a \QP.
 
 \subsubsection{Linear 2--Norm Constraint}
-    For $p=2$, Equation [\ref{eqn:p_norm_constraint}] can be squared to get
+    For $p_i=2$, equation (\ref{eqn:p_norm_constraint}) can be squared to get
 
     \begin{align*}
         \|A_i&x-b_i\|_2^2\leq t_i^2,
@@ -1133,7 +1133,7 @@ which is a \QP with
     
 \subsubsection{Linear Inf--Norm Constraint}
 
-    For $p=\infty$, Equation [\ref{eqn:p_norm_constraint}] is equivalent to
+    For $p_i=\infty$, equation (\ref{eqn:p_norm_constraint}) is equivalent to
 
     \begin{align*}
         \min_{\{x,y_i\}\in\{\R^n,\R\}} \quad J =f(x)
@@ -1142,7 +1142,7 @@ which is a \QP with
         \st\quad x&\in\poly,\\
         y_i&\leq t_i,\\
         -y_i\ones&\leq A_ix-b_i\leq y_i\ones.
-    \end{align*}
+    \end{align*} 
 
     Figure \ref{fig:inf_norm_constraint} depicts the intersection of 
     inf--norm inequality constraints.
@@ -1186,7 +1186,7 @@ which is a \QP with
 
         For $A_i\in\R^{q_i\times n}$, consider the problem
         \begin{align*}
-            \min_{x\in\R^n}\quad \max_{i\in\Z[0,m-1]} \quad J_i = \|A_ix-b_i\|_p,
+            \min_{x\in\R^n}\quad \max_{i\in\Z[0,m-1]} \quad J_i = \|A_ix-b_i\|_{p_i},
         \end{align*}
         \begin{align*}
             \st\quad x\in\poly.
@@ -1197,13 +1197,13 @@ which is a \QP with
         \end{align*}
         \begin{align}
             \st\quad x&\in\poly,\nonumber\\
-            \|A_ix-b_i\|_p&\leq y.\label{eqn:robust}
+            \|A_ix-b_i\|_{p_i}&\leq y.\label{eqn:robust}
         \end{align}
         If $p\in\{1,\infty\}$, this is an \LP.
 
 \subsubsection{Robust 1--Norm from a Finite Set}
 
-        For $p=1$ and $i\in\Z[0,m-1]$, Equation [\ref{eqn:robust}] is equivalent to the \LP
+        For $p_i=1$, equation (\ref{eqn:robust}) is equivalent to the \LP
         \begin{align*}
             \min_{\{x,y,z_i\}\in\{\R^n,\R,\R^{q_i}\}} \quad J =y
         \end{align*}
@@ -1215,7 +1215,7 @@ which is a \QP with
 
 \subsubsection{Robust Inf--Norm from a Finite Set}
 
-        For $p=\infty$ and $i\in\Z[0,m-1]$, Equation [\ref{eqn:robust}] is equivalent to the \LP
+        For $p_i=\infty$, equation (\ref{eqn:robust}) is equivalent to the \LP
 
         \begin{align*}
             \min_{\{x,y,z_i\}\in\{\R^n,\R,\R\}} \quad J =y
@@ -1251,11 +1251,11 @@ which is a \QP with
 
     where $f(u)$ is the deadzone
 
-    \begin{align*}
+    \begin{align}
         f(u) &= \left\{\arr{0 & \text{if $|u|\leq t$} \\ |u|-t & \text{else}}\right.\\
-        &=\max(\:-u-t,\:\:0,\:u-t\:)\numberthis\label{eqn:deadzone_penalty},\\\\
-        f'(u) &= \left\{\arr{0 & \text{if $|u|\leq t$} \\ \sign(u) & \text{else}}\right..
-    \end{align*}
+        &=\max(\:-u-t,\:\:0,\:u-t\:),\nonumber\\\nonumber\\
+        f'(u) &= \left\{\arr{0 & \text{if $|u|\leq t$} \\ \sign(u) & \text{else}}\right..\nonumber
+    \end{align}
     \note{The deadzone penalty is not a norm because it fails the condition $f(x)=0$ if and only if $x=0$.}\\
     This problem is equivalent to \cite[p.~344]{bv_cvxbook}
 
@@ -1299,12 +1299,11 @@ which is a \QP with
         \st\quad x\in\poly,
     \end{align*}
     where $f(u)$ is the Huber function
-    \begin{align*}
-        f(u) &= \left\{\arr{u^2 & \text{if $|u|\leq t$} \\ t(2|u|-t) & \text{else}}\right.,
-        \numberthis\label{eqn:huber_penalty}\\
-        f'(u) &= \left\{\arr{2u & \text{if $|u|\leq t$} \\ 2t\:\sign(u) & \text{else}}\right.\\
-        &=2\:\sat(u,t).
-    \end{align*}
+    \begin{align}
+        f(u) &= \left\{\arr{u^2 & \text{if $|u|\leq t$} \\ t(2|u|-t) & \text{else}}\right.,\\
+        f'(u) &= \left\{\arr{2u & \text{if $|u|\leq t$} \\ 2t\:\sign(u) & \text{else}}\right.\nonumber\\
+        &=2\:\sat(u,t).\nonumber
+    \end{align}
     \note{The Huber penalty is a norm.}\\
     This problem is equivalent to \cite[p.~190]{bv_cvxbook}
     \begin{align*}
@@ -1377,10 +1376,10 @@ which is a \QP with
         \st\quad x\in\poly,
     \end{align*}
     where $f(u)$ is the rectified linear penalty function
-    \begin{align*}
-        f(u)&=(u)_+\\
+    \begin{align}
+        f(u)&=\hinge(u)\nonumber\\
         &=\max(0,u).
-    \end{align*}
+    \end{align}
     This problem can be expressed as the \LP
     \begin{align*}
         \min_{\{x,y\}\in\{\R^n,\R^m\}}\quad J=\ones^\tp y
@@ -1398,10 +1397,10 @@ which is a \QP with
         \min_{x\in\R^n}\quad J=\sum_{i=0}^{m-1}f(a_i^\tp x-b_i)
     \end{align*}
     where $f(u)$ is the leaky--linear penalty function
-    \begin{align*}
-        f(u)&=(u)_+-t(-u)_+\\
+    \begin{align}
+        f(u)&=\hinge(u)-t\:\hinge(-u)\nonumber\\
         &=\max(t u,u),
-    \end{align*}
+    \end{align}
     with $t\in\R(0,1)$.
     This problem can be expressed as the \LP
     \begin{align*}
@@ -1417,6 +1416,82 @@ which is a \QP with
 
 
 \section{Duality}
+
+\subsection{KKT: Karush--Kuhn--Tucker}
+
+Consider the general problem
+
+\begin{align}
+    \min_{x\in\dom}\quad J&=f(x)\label{eqn:gen_constrained}
+\end{align}
+
+with the constraint set 
+
+\begin{align*}
+    \dom=\{x \:|\:g_i(x)=0,\: h_j(x)\leq 0\}.
+\end{align*}
+
+Consider the generalized Lagrangian 
+
+\begin{align} 
+    L(x,y,z) = f(x)+\sum_i y_i g_i(x)+\sum_j z_j h_j(x),
+\end{align}
+
+which (if there is no duality gap) has the property \cite{dl}
+
+\begin{align}
+    \max_{y_i}\max_{z_j\geq 0} L(x,y,z) = \left\{
+    \arr{
+        f(x) & \text{if}\:x\in\dom\\
+        \infty & \text{else}
+    }   \right..
+\end{align}
+
+Therefore, (\ref{eqn:gen_constrained}) can be reformulated as
+
+\begin{align*}
+    \min_x L(x,y^*,z^*) = \min_x\max_{y_i}\max_{z_j\geq 0} L(x,y,z).
+\end{align*}
+
+The inequality constraint $h_j(x)$ is active if
+
+\begin{align*} 
+    h_j(x^*)=0.
+\end{align*}
+
+If the inequality constraint is inactive, then $h_j(x^*)<0$, 
+and maximizing $z_j h_j(x^*)$ such that $z_j\geq0$ gives
+
+\begin{align*} 
+    z_j^*=0.
+\end{align*}
+
+Therefore,
+
+\begin{align} 
+    z^*\circ h(x^*)=0.\label{eqn:comp_slack}
+\end{align}
+
+\note{This property is known as `complamentary slackness'.}
+
+The first order necessary (but not sufficient) conditions of KKT optimality are:
+
+\begin{itemize}
+    \item the gradient of the generalized Lagrangian is zero, i.e.,
+
+        \begin{align*}
+            \pd{L}{x}=0,\quad
+            \pd{L}{y_i}=0,\quad
+            \pd{L}{z_j}=0,
+        \end{align*}  
+
+    \item the constraints $x\in\dom$ and $z_j\geq0$ are satisfied,
+
+    \item and equation (\ref{eqn:comp_slack}) is satisfied.
+\end{itemize}
+
+\clearpage
+\subsection{Duality with Polyhedron Constraint}
 
 Consider the primal problem
 
@@ -1437,12 +1512,12 @@ Let
 \end{align*}
 
 
-For $A_\ub\in\R^{{r}\times n}$ and $A\in\R^{m\times n}$, the dual problem formulation is
+For $A_\ub\in\R^{{r}\times n}$ and $A_\eq\in\R^{m-r\times n}$, the dual problem formulation is
 
-\begin{align*}
+\begin{align}
     \max_{y\in\R^m}\quad 
     \inf_{x\in\R^n}\quad L(x,y)
-\end{align*}
+\end{align}
 \begin{align*}
     \st\quad  \mat{\eye_{r}&\zeros^{{r}\times (m-{r})}}y\geq \zeros^{r},
 \end{align*}
@@ -1487,11 +1562,11 @@ If strong duality holds, the following steps compute $x^*$:
     \begin{align*}
         \st \quad x\in\poly.
     \end{align*}
-    The dual problem is illustrated in Figure \ref{fig:dual} \cite[p.~9]{luenberger}.
+    The dual problem is illustrated in figure \ref{fig:dual} \cite[p.~9]{luenberger}.
 
 \clearpage
 
-Conisder the problem
+For $p\in\R[1,\infty)$, conisder the problem
 
 \begin{align*}
     \min_{x\in\R^n}\quad J = \|x\|_p
@@ -1503,10 +1578,18 @@ Conisder the problem
 The dual problem is given by
 
 \begin{align*}
-    \max_{y\in\R^m}\inf_{x\in\R^n}\quad L(x,y) = \|x\|_p + y^\tp (Ax-b),
+    \max_{y\in\R^m}\inf_{x\in\R^n}\quad L(x,y) = \|x\|_p + y^\tp (Ax-b).
 \end{align*}
 
-which becomes
+By Hölder's inequality from section \ref{sec:holder},
+
+\begin{align*}
+    \|x\|_p + \textstyle\sum_i[A^\tp y]_i x_i &\geq \|x\|_p - \textstyle\sum_i|[A^\tp y]_ix_i|\\
+    &\geq \|x\|_p - \|A^\tp y\|_q\|x\|_p\quad =(1-\|A^\tp y\|_q)\|x\|_p,
+\end{align*}
+where $1/p+1/q=1$.
+
+The dual problem becomes
 \cite[p.~221]{bv_cvxbook}\cite[p.~107]{luenberger}\cite[p.~123]{luenberger}
 
 \begin{align*}
@@ -1518,23 +1601,22 @@ which becomes
     }    
     \right.,
 \end{align*}
-
-where $q=p/(p-1)$ for $p\in\R[1,\infty)$.
+where $q=p/(p-1)$.
 
 \note{This does not hold for $p=\infty$.} 
 
 The dual problem can be stated as
 
-\begin{align*}
+\begin{align}
     \min_{y\in\R^m}\quad -L = b^\tp y
-\end{align*}
+\end{align}
 \begin{align*}
     \st\quad \|A^\tp y\|_q \leq 1.
 \end{align*}
 
 \subsubsection{1--Norm}
 
-For $p=1$, $q=\infty$ and this becomes the \LP
+For $p=1$, $q=\infty$. The problem becomes the \LP
 
 \begin{align*}
     \min_{\{y,z\}\in\{\R^m,\R\}}\quad -L = b^\tp y + z
@@ -1553,7 +1635,7 @@ or
 \end{align*}
 \subsubsection{2--Norm}
 
-For $p=2$, $q=2$ and this becomes the \QCQP
+For $p=2$, $q=2$. The problem becomes the \QCQP
 
 \begin{align*}
     \min_{y\in\R^m}\quad -L =b^\tp y
@@ -1585,7 +1667,7 @@ where $Q=AA^\tp$.
     \end{align*}
 
 
-    For $A_\ub\in\R^{{r}\times n}$ and $A\in\R^{m\times n}$, the dual problem formulation is
+    For $A_\ub\in\R^{{r}\times n}$ and $A_\eq\in\R^{m-r\times n}$, the dual problem formulation is
 
     \begin{align*}
         \max_{y\in\R^m}\quad 
@@ -1612,9 +1694,9 @@ where $Q=AA^\tp$.
 
     Making dual constraints explicit gives the \LP
 
-    \begin{align*}
+    \begin{align}
         \min_{y\in\R^m}\quad -L(x^*,y)=b^\tp y
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad  \mat{-\eye_{r}&\zeros^{{r}\times (m-{r})}}y&\leq \zeros^{r},\\
         A^\tp y &=-c.
@@ -1655,7 +1737,7 @@ where $Q=AA^\tp$.
     \end{align*}
 
 
-    For $A_\ub\in\R^{{r}\times n}$ and $A\in\R^{m\times n}$, the dual problem formulation is
+    For $A_\ub\in\R^{{r}\times n}$ and $A_\eq\in\R^{m-r\times n}$, the dual problem formulation is
 
     \begin{align*}
         \max_{y\in\R^m}\quad 
@@ -1682,9 +1764,9 @@ where $Q=AA^\tp$.
         c^\tp+y^\tp A.
     \end{align*}
     Setting this to zero and solving gives
-    \begin{align*}
+    \begin{align}
         x^*&=-Q^{-1}(A^\tp y+c)
-    \end{align*}
+    \end{align}
     and
     \begin{align*}
         L(x^*,y) &= 
@@ -1701,9 +1783,9 @@ where $Q=AA^\tp$.
 
     The dual problem is the \QP
 
-    \begin{align*}
+    \begin{align}
         \min_{y\in\R^m}\quad -L(x^*,y)=\frac{1}{2} y^\tp Q_{\text{dual}\:} y + c_{\text{dual}\:}^\tp y
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad  \mat{-\eye_{r}&\zeros^{{r}\times (m-{r})}}y&\leq \zeros^{r},
     \end{align*}
@@ -1746,9 +1828,9 @@ where $Q=AA^\tp$.
         y^\tp A_+, 
     \end{align*}
     which gives
-    \begin{align*}
+    \begin{align}
         x_+^* =  -S_+^{-1}(A_+^\tp y + c_+).
-    \end{align*}
+    \end{align}
     Minimizing $x_0$,
     \begin{align*}
         L(x^*,y) &= \frac{1}{2} x_+^{*\tp} S_+  x_+^* +  \mat{c_+^\tp   & c_0^\tp }\mat{x_+^*\\x_0}  
@@ -1774,9 +1856,9 @@ where $Q=AA^\tp$.
 
     Making dual constraints explicit gives the \QP
 
-    \begin{align*}
+    \begin{align}
         \min_{y\in\R^m}\quad -L(x^*,y)=\frac{1}{2} y^\tp Q_{\text{dual}\:} y + c_{\text{dual}\:}^\tp y 
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad  \mat{-\eye_{r}&\zeros^{{r}\times (m-{r})}}y&\leq \zeros^{r},\\
         A_0^\tp y&=-c_0,
@@ -1831,9 +1913,9 @@ where $Q=AA^\tp$.
     Conversely, there exists a $t$ for every fixed selection of $\lambda>0$.  Selecting
     $\lambda>0$, the regularized problem is defined as
 
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad J = \|Ax-b\|_p+\lambda\|x\|_q.
-    \end{align*}
+    \end{align}
 
     Figure \ref{fig:lasso} shows $\ell_1$ constraints with $\ell_2$ residuals will
     preferentially seek solutions with ordinates at zero. \\
@@ -2015,7 +2097,7 @@ where $Q=AA^\tp$.
 
     Computing $A=\lrs\psv\rrs^\tp$ with SVD, 
     the problem can be regularized with uniform circles 
-    (as depicted in Figure \ref{fig:lasso}). Using
+    (as depicted in figure \ref{fig:lasso}). Using
 
     \begin{align*}
         x&=\rrs \psv^{-1} y+\rns z,
@@ -2068,7 +2150,7 @@ deadzone or Huber.
 
     This problem formulation gives exceptional sparsity for large $p$.
     It is equivalent to $1/p$--regularized $p$--constrained problem 
-    illustrated in Figure \ref{fig:fraction_p_1}.
+    illustrated in figure \ref{fig:fraction_p_1}.
     This problem is non--convex, which means multiple extremum may occur.
     Figure \ref{fig:fraction_p_2} illustrates non--unique solution.
 
@@ -2084,14 +2166,15 @@ deadzone or Huber.
         r_i = a_i^\tp x-b_i,
     \end{align*}
     and the Hessian is given by
+
     \begin{align*}
         \pdd{J}{x_j}{x_k}&=\frac{p-1}{p}\|r\|_{1/p}^{-2}
         \left(\textstyle\sum_{i=0}^{m-1}A_{ij}\:\sign(r_i)|r_i|^{1/p-1}\right)
         \left(\textstyle\sum_{i=0}^{m-1}A_{ik}\:\sign(r_i)|r_i|^{1/p-1}\right)\\
         &\quad+(1/p-1)\|r\|_{1/p}^{-1}
         \left(\textstyle\sum_{i=0}^{m-1}A_{ij}A_{ik}|r_i|^{1/p-2}\right)\\
-        &\quad+p(1/p-1)\|x\|_p^{-2}\sign(x_jx_k)|x_jx_k|^{p-1}\\
-        &\quad+(p-1)\|x\|_p^{-1}|x_j|^{p-2}\bin(j=k)
+        &\quad+p(1/p-1)\|x\|_p^{-2}\sign(x_jx_k)|x_jx_k|^{p-1}
+        +(p-1)\|x\|_p^{-1}|x_j|^{p-2}\delta_{jk}.
     \end{align*}
 
     \begin{figure}[b!]
@@ -2125,22 +2208,23 @@ deadzone or Huber.
         &= \|f_0+g_0^\tp(x-x_0)+O(d^2)\|\\
         &= \|A_0x+b_0+O(d^2)\|,
     \end{align*}
-    where $f_0=f(x_0)$,
+    where
     \begin{align*}
-        A&= g^\tp,\\
-        b&=f-g^\tp x,
+        A_0&= g_0^\tp,\\
+        b_0&=f_0-g_0^\tp x_0,
     \end{align*}
     and
     \begin{align*}
-        g&=\grad f.
+        f_0&=\lim_{x\to x_0} f,\\
+        g_0&=\lim_{x\to x_0}\grad f.
     \end{align*}
 
     If $d^2\leq nr^2$ for a sufficiently small $r>0$, the problem
 
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad J &= \|f(x)\|\\
-        \st \quad &x\in\poly
-    \end{align*}
+        \st \quad &x\in\poly\nonumber
+    \end{align}
 
     can be solved with Algorithm \ref{algo:itp1} or \ref{algo:itp2}. 
     \note{Any of the penalty functions that result in \LP or \QP can be used.}
@@ -2160,7 +2244,7 @@ deadzone or Huber.
             $x_0\leftarrow x^*$
         }
     \caption{Nonlinear Solver with Step Bounding Box.
-    Alternative: p--norm constraint with Equation [\ref{eqn:p_norm_constraint}].}
+    Alternative: p--norm constraint with equation (\ref{eqn:p_norm_constraint}).}
     \label{algo:itp1}
     \end{algorithm}
     \begin{algorithm}[H]
@@ -2182,89 +2266,34 @@ deadzone or Huber.
 
 \clearpage
 
-\subsection{2--Norm of Nonlinear Function}
+\subsection{Differentiable Objective Functions}
 
-    Consider the nonlinear function $f(x):\R^n\to\R^m$. For positive definite $W\in\posdef^m$, consider
+    Consider
+    \begin{align}
+        \min_{x\in\R^n}\quad J &= f(x)\\
+        \st \quad &x\in\poly,\nonumber
+    \end{align}
+
+    where $f(x)$ is differentiable. Expansion of the objective gives
 
     \begin{align*}
-        J &= \|f(x)\|_{2,W}^2.
-    \end{align*}
-    The linear expansion is
-    \begin{align*}
-        J &= J_0 + g_0^\tp(x-x_0) + O(d^2).
-    \end{align*}
-    The quadratic expansion is
-    \begin{align*}
-        J &= J_0 + g_0^\tp(x-x_0)+\frac{1}{2} (x-x_0)^\tp H_0 (x-x_0)+ O(d^3)\\
+        J &= J_0 + g_0^\tp(x-x_0) + O(d^2)\\
+        &= J_0 + g_0^\tp(x-x_0)+\frac{1}{2} (x-x_0)^\tp H_0 (x-x_0)+ O(d^3)\\
         &=\frac{1}{2} x^\tp Q_0 x+c_0^\tp x+\text{constant}+ O(d^3),
     \end{align*}
-    where
+    with
     \begin{align*}
         Q_0&=H_0,\\
-        c_0&=g_0-H_0x_0.
+        c_0&=g_0-H_0x_0,
     \end{align*}
+    and
+        \begin{align*}
+            g_0&= \lim_{x\to x_0}\grad f,\\
+            H_0&= \lim_{x\to x_0}\hess(f).
+        \end{align*}
 
     If $d^3\leq nr^3$ for a sufficiently small $r>0$, the problem
-
-    \begin{align*}
-        \min_{x\in\R^n}\quad J &= \|f(x)\|_{2,W}^2\
-    \end{align*}
-    \begin{align*}
-        \st \quad x\in\poly
-    \end{align*}
-    can be solved with Algorithm \ref{algo:it21} or \ref{algo:it22}.
-    If $\poly=\R^n$, Algorithm \ref{algo:it24} or \ref{algo:it23} can be used.
-    \\
-    \note{These algorithms can be extended to mixtures of $\ell_p$.}
-
-    \subsubsection{Non--Diagonal Weight}
-    For $M=W^\tp W$, the gradient is calculated with
-    \begin{align*}
-        g^\tp & = \grad J^\tp\\
-            & = 2f^\tp M h,
-    \end{align*}
-    where
-    \begin{align*}
-        h &= \pd{f}{x},
-    \end{align*}
-    and the Hessian is calculated with
-
-    \begin{align*}
-        H&=\grad^2 J\\
-        &= \pd{}{x}\:2h^\tp M f\\
-        &=2\:\col\left\{
-        \pd{h^\tp}{x_i} M f
-        \right\}_{i=0}^{n-1}+2h^\tp M h\\
-        &=2\:\col\left\{
-            \pd{h^\tp}{x_i} 
-            \right\}_{i=0}^{n-1}
-        \left(\eye_n\otimes Mf\right)+2h^\tp M h.
-    \end{align*}
-    Alternatively,
-    \begin{align*}
-        H&= 
-        2(\eye_n \otimes f^\tp M)\pd{\:\mathrm{vec}\left(h^\tp\right)}{x}+2h^\tp M h\\
-        &=2\:\row\left\{
-            f^\tp M \pd{h}{x_i}
-        \right\}_{i=0}^{n-1}+2h^\tp M h.
-    \end{align*}
-    \note{$H=H^\tp$.}
-
-    \subsubsection{Diagonal Weight}
-    If $W=\diag\{w_i\}_{i=0}^{m-1}$
-    \begin{align*}
-        J = \sum_{i=0}^{m-1} w_i^2 f_i^2.
-    \end{align*}
-    The gradient is given by
-    \begin{align*}
-        g&=\grad J \\
-        & = \sum_{i=0}^{m-1} 2 w_i^2 f_i \grad f_i
-    \end{align*}
-    The Hessian is given by
-    \begin{align*}
-        H&=\pd{}{x}\grad J \\
-        &= \sum_{i=0}^{m-1} 2 w_i^2 (\grad f_i \grad f_i^\tp+f_i \grad^2 f_i).
-    \end{align*}
+    can be solved with Algorithm \ref{algo:it21}, \ref{algo:it22}, or \ref{algo:it25}.
 
 \subsubsection{Gradient Search}
 
@@ -2272,15 +2301,24 @@ deadzone or Huber.
     \begin{align*}
         \min_{x\in\R^n}\quad J&=J_0 + g_0^\tp(x-x_0)+ O(d^2).
     \end{align*}
-    If $\poly=\R^n$, ignoring $O(d^2)$, 
+
+    Ignoring the $O(d^2)$ term, 
     stepping in the direction of maximum decline with $s\in\R$ 
     and $M\in\posdef^n$,
+
     \begin{align*}
-        x^*(s) &=x_0-2^sMg_0,\\
-        J^*(s) &= J_0 -2^s g_0^\tp M g_0+O(2^{2s}).
+        x^*(s) &=x_0-e^sMg_0,\\
+        J^*(s) &= J_0 -e^s g_0^\tp M g_0+O(e^{2s}).
     \end{align*}
-    Algorithm \ref{algo:it24} searches for an optimal $s$ and then takes a scaled step.\\
-    \note{$M$ may be normazlied by $\|g_0\|$ or $\|g_0\|^2$ at each iteration.}
+
+    Algorithm \ref{algo:it24} searches for an optimal $s$ and then takes a scaled step.
+
+    \note{If $g_0\neq0$, $M=g_0g_0^\tp/\|g_0\|_2^2$ gives
+    \begin{align*}
+        x^*(s) &=x_0-e^sg_0/\|g_0\|_2,\\
+        J^*(s) &= J_0 -e^s+O(e^{2s}).
+    \end{align*}
+    }
 
 \subsubsection{Hessian Search}
 
@@ -2288,8 +2326,10 @@ deadzone or Huber.
     \begin{align*}
         \min_{x\in\R^n}\quad J&=J_0 + g_0^\tp(x-x_0)+\frac{1}{2} (x-x_0)^\tp H_0 (x-x_0)+ O(d^3).
     \end{align*}
-    If $\poly=\R^n$, ignoring the $O(d^3)$ term, 
+
+    Ignoring the $O(d^3)$ term, 
     the optimal solution is found by solving
+
     \begin{align*}
         0 = g_0^\tp + (x^*-x_0)^\tp H_0,
     \end{align*}
@@ -2297,8 +2337,10 @@ deadzone or Huber.
     \begin{align*}
         x^*=x_0-H_0^+g_0.
     \end{align*}
-    \note{Selecting the matrix condition of the pseudo inverse with SVD can provide a well-conditioned step.}\\
+
+    \note{SVD can provide well-conditioned steps using matrix conditioning.}\\
     If the pure--Newton iteration is scaled by $s>0$ with
+
     \begin{align*}
         x(s)=x_0-sH_0^+g_0,
     \end{align*}
@@ -2306,21 +2348,64 @@ deadzone or Huber.
     \begin{align*}
         J(s) = J_0 +(s^2/2-s)g_0^\tp H_0^+ g_0+O(s^3),
     \end{align*}
+
     where $(s^2/2-s)$ is negative for $s\in(0,2)$, 
     equal to zero at $s\in\{0,2\}$, 
     and minimum at $s=1$.\\
     Algorithm \ref{algo:it23} searches for an optimal $s$ and then takes a scaled step.
 
+\subsubsection{Differentiable 2--Norm Objective}
 
-\clearpage
+    Consider a differentiable nonlinear function $f(x):\R^n\to\R^m$ and the problem 
 
+    \begin{align}
+        \min_{x\in\R^n}\quad J &= \|f(x)\|_{2|W}^2\\
+        \st \quad &x\in\poly.\nonumber
+    \end{align}
+
+    If $W=\diag\{w_i\}_{i=0}^{m-1}$,
+    \begin{align*}
+        J = \sum_{i=0}^{m-1} w_i^2 f_i^2.
+    \end{align*}
+    The gradient is given by
+    \begin{align*}
+        g&=\grad J \\
+        & = 2\sum_{i=0}^{m-1}  w_i^2 f_i \grad f_i
+    \end{align*}
+    The Hessian is given by
+    \begin{align*}
+        H&=\pd{}{x}\grad J \\
+        &= 2\sum_{i=0}^{m-1}  w_i^2 (\grad f_i \grad^\tp f_i+f_i \hess(f_i)).
+    \end{align*}
+
+    If $W\in R^{m \times m}$ with $M=W^\tp W$, 
+    \begin{align*}
+        \|f(x)\|_{2|W}^2 &= \textstyle\sum_{i=0}^{m-1}\sum_{j=0}^{m-1} M_{ij}f_i f_j.
+    \end{align*}
+    The gradient is
+    \begin{align*}
+        g & = \grad J\\
+            & = 2h^\tp M f,
+    \end{align*}
+    where
+    \begin{align*}
+        h &= \pd{f}{x},
+    \end{align*}
+    and the Hessian is
+    \begin{align*}
+        H&= 
+        2(\eye_n \otimes f^\tp M)\pd{\:\mathrm{vec}\left(h^\tp\right)}{x}+2h^\tp M h\\
+        &=2\:\row\left\{
+            f^\tp M \pd{h}{x_i}
+        \right\}_{i=0}^{n-1}+2h^\tp M h.
+    \end{align*}
     \begin{algorithm}[H]
         \SetAlgoLined
         $x_0 \in\poly$, $r>0$\\
         \While{$x_0$ \emph{not converged}}
         {
             \begin{align*}
-                \min_{x\in\R^n}\quad J = \frac{1}{2}x^\tp Q_0 x+c_0^\tp x 
+                \min_{x\in\R^n}\quad J = \textstyle\frac{1}{2}x^\tp Q_0 x+c_0^\tp x 
             \end{align*}
             \begin{align*}
                 \st \quad &x\in\poly,\\
@@ -2328,8 +2413,7 @@ deadzone or Huber.
             \end{align*}
             $x_0\leftarrow x^*$
         }
-    \caption{Nonlinear $\ell_2$ Solver with Step Bounding Box. 
-    Alternative: p--norm constraint with Equation [\ref{eqn:p_norm_constraint}].}
+    \caption{Nonlinear Solver with Step Bounding Box.}
     \label{algo:it21}
     \end{algorithm}
     \begin{algorithm}[H]
@@ -2338,30 +2422,47 @@ deadzone or Huber.
         \While{$x_0$ \emph{not converged}}
         {
             \begin{align*}
-                \min_{x\in\R^n}\quad J = \frac{1}{2}x^\tp Q_0 x+c_0^\tp x +\lambda \|x-x_0\|
+                \min_{x\in\R^n}\quad J = \textstyle\frac{1}{2}x^\tp Q_0 x+c_0^\tp x +\lambda \|x-x_0\|
             \end{align*}
             \begin{align*}
                 \st \quad &x\in\poly.
             \end{align*}
             $x_0\leftarrow x^*$
         }
-    \caption{Nonlinear $\ell_2$ Solver with Step Regularization}
+    \caption{Nonlinear Solver with Step Regularization}
     \label{algo:it22}
     \end{algorithm}
+    \begin{algorithm}[H]
+        \SetAlgoLined
+        $x_0 \in\poly$, $r>0$, $p\in\{1,\infty\}$\\
+        \While{$x_0$ \emph{not converged}}
+        {
+            \begin{align*}
+                \min_{x\in\R^n}\quad J = \textstyle\frac{1}{2}x^\tp Q_0 x+c_0^\tp x
+            \end{align*}
+            \begin{align*}
+                \st \quad &x\in\poly,\\
+                \|&x-x_0\|_p\leq n^{1/p}r.
+            \end{align*}
+            $x_0\leftarrow x^*$
+        }
+    \caption{Nonlinear Solver with p--norm constraint}
+    \label{algo:it25}
+    \end{algorithm} 
     \begin{algorithm}[H]
         \SetAlgoLined
         $x_0\in\poly$, $M\in\posdef^n$\\
         \While{$x_0$ \emph{not converged}}
         {
             \begin{align*}
-                x(s)=x_0-2^sMg_0,
+                x(s)=x_0-e^sMg_0,
             \end{align*}
             \begin{align*}
                 \min_{s\in\R} J(x(s)).
             \end{align*}
             $x_0\leftarrow x^*$
         }
-    \caption{Unconstrained Nonlinear $\ell_2$ Solver with Gradient Line Search}
+    \caption{Unconstrained Nonlinear Solver with Gradient Line Search}
     \label{algo:it24}
     \end{algorithm}
     \begin{algorithm}[H]
@@ -2373,27 +2474,28 @@ deadzone or Huber.
                 x(s)&=x_0-sH_0^+g_0,
             \end{align*}
             \begin{align*}
-                \min_{s\in\R(0,2)} J(x(s))
+                \min_{s\in\R[0,2]} J(x(s))
             \end{align*}
             $x_0\leftarrow x^*$
         }
-    \caption{Unconstrained Nonlinear $\ell_2$ Solver with Hessian Line Search}
+    \caption{Unconstrained Nonlinear Solver with Hessian Line Search}
     \label{algo:it23}
     \end{algorithm}
+
 \clearpage
 \subsection{Nonlinear Equality Constraints}\label{sec:np_constraint}
 
     Consider the nonlinear function $f_\eq(x):\R^n\to\R^m$,
-    and consider the linear p-norm with nonlinear constraint
+    and consider the problem
     \begin{align}
-        \min_{x\in\R^n} \quad J &= \|Ax-b\|\nonumber\\
+        \min_{x\in\R^n} \quad J &= \|Ax-b\|\label{eqn:nonlin_equality}\\
         \st \quad &x\in\poly,\nonumber\\
-        f_\eq(&x)=0.\label{eqn:nonlin_equality}
+        f_\eq(&x)=0.\nonumber
     \end{align}
 
 \subsubsection{Penalty Approach}
 
-    The nonlinear constraint in Equation \ref{eqn:nonlin_equality} can be brought into the objective function with
+    The nonlinear constraint in equation (\ref{eqn:nonlin_equality}) can be brought into the objective function with
     
     \begin{align*}
         \min_{x\in\R^n} \quad J &= \|Ax-b\|+\|f_\eq(x)\|_W
@@ -2408,8 +2510,8 @@ deadzone or Huber.
     If the residual and regularization are $\ell_2$, then
 
     \begin{align*}
-        \min_{x\in\R^n} \quad J &= \|Ax-b\|_2^2+\|f_\eq(x)\|_{2,W}^2\\
-        &=x^\tp A^\tp A x -2 b^\tp Ax +b^\tp b+\|f_{\eq}(x_0)\|_{2,W}^2 + g_0^\tp(x-x_0)+\frac{1}{2} (x-x_0)^\tp H_0 (x-x_0)+ O(d^3)\\
+        \min_{x\in\R^n} \quad J &= \|Ax-b\|_2^2+\|f_\eq(x)\|_{2|W}^2\\
+        &=x^\tp A^\tp A x -2 b^\tp Ax +b^\tp b+\|f_{\eq}(x_0)\|_{2|W}^2 + g_0^\tp(x-x_0)+\frac{1}{2} (x-x_0)^\tp H_0 (x-x_0)+ O(d^3)\\
         & = \frac{1}{2} x^\tp Q_0 x +c_0^\tp x +\text{constant} + O(d^3)
     \end{align*}
     \begin{align*}
@@ -2424,7 +2526,8 @@ deadzone or Huber.
 
 \subsubsection{Linearization}
 
-    The nonlinear constraint in Equation \ref{eqn:nonlin_equality} can be linearized with
+    The nonlinear constraint in equation (\ref{eqn:nonlin_equality}) can be linearized with
+
     \begin{align*}
         \min_{x\in\R^n} \quad J = \|Ax-b\|
     \end{align*}
@@ -2441,11 +2544,24 @@ deadzone or Huber.
     \begin{align*}
         g &= \grad f_\eq.
     \end{align*}
+
     The constraint $d^2\leq n r^2$ can be added as a box (Algrothim \ref{algo:itc1}),
     p--norm (Algorithm \ref{algo:itc3}), or 
     regularization (Algorithm \ref{algo:itc2}).
 
-    \clearpage
+    \subsubsection{Nonlinear Inequality}
+
+    Consider the nonlinear inequality $f_\ub(x)\leq 0$. 
+    A slack variable $y\in\R^m$ can be used to recover nonlinear equality with
+
+    \begin{align}
+        \min_{\{x,y\}\in\{\R^n,\R^m\}} \quad J &= \|Ax-b\|
+    \end{align}
+    \begin{align*}
+        \st \quad x&\in\poly,\\
+        f_\ub(x&)+y =  0,\\
+        y&\geq 0.
+    \end{align*}
 
     \begin{algorithm}[H]
         \SetAlgoLined
@@ -2482,7 +2598,7 @@ deadzone or Huber.
             $x_0\leftarrow x^*$
         }
     \caption{Nonlinear Constrained Solver with p--norm constraint 
-    solved with Equation [\ref{eqn:p_norm_constraint}]}
+    solved with equation (\ref{eqn:p_norm_constraint})}
     \label{algo:itc3}
     \end{algorithm} 
 
@@ -2507,16 +2623,7 @@ deadzone or Huber.
     \label{algo:itc2}
     \end{algorithm}
 
-    \subsubsection{Nonlinear Inequality}
 
-    Consider the nonlinear inequality $f_\ub(x)\leq 0$. 
-    A slack variable $y\in\R^m$ can be used to recover nonlinear equality with
-    \begin{align*}
-        \min_{\{x,y\}\in\{\R^n,\R^m\}} \quad J &= \|Ax-b\|\\
-        \st \quad x&\in\poly,\\
-        f_\ub(x&)+y =  0,\\
-        y&\geq 0.
-    \end{align*}
 
 \clearpage
 
@@ -2528,35 +2635,42 @@ deadzone or Huber.
         \label{fig:log_barrier}
     \end{figure}
 
-    Adding a slack variable, the nonlinar constraint in Equation \ref{eqn:nonlin_equality} can be re--expressed as the nonlinear inequality problem
+    Adding a slack variable, the nonlinar constraint in equation (\ref{eqn:nonlin_equality}) can be re--expressed as the nonlinear inequality problem
 
-    \begin{align*}
+    \begin{align}
         \min_{\{x,y\}\in\{\R^n,\R^m\}}\quad J = \|Ax-b\|+\|y\|_W
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st \quad -f_\eq(x)-y&\leq 0,\\
         f_\eq(x)-y&\leq 0.
     \end{align*}
-    \note{These constraints force $y\geq0$.}
+
+    \note{These constraints give $-y\leq f_\eq(x)\leq y$ with $y\geq0$.}
 
     For $\lambda>0$, the logrithmic barrier problem is given by \cite[p.~562]{bv_cvxbook}
 
     \begin{align*}
         \min_{\{x,y\}\in\{\R^n,\R^m\}}\quad J &= \|Ax-b\|+\|y\|_W+\lambda h(x,y),
     \end{align*}
+
     where 
+
     \begin{align*}
         h&=-\sum_{i=0}^{m-1}\left(\log(y_i+f_i)+\log(y_i-f_i)\right).
     \end{align*}
-    The gradient of $h$ is
+
+    The gradient is
+
     \begin{align*}
-        \mat{g_1\\g_2}&=\grad h, 
+        \grad^\tp h=\mat{ \pd{h}{x} & \pd{h}{y}}, 
     \end{align*}
+
     where
+
     \begin{align*}
-        g_1^\tp&=\pd{h}{x}\\
+        \pd{h}{x}
             &=-\sum_{i=0}^{m-1} \left(\frac{1}{y_i+f_i}-\frac{1}{y_i-f_i}\right)\pd{f_i}{x}, \\\\
-        g_2^\tp&=\pd{h}{y}\\
+        \pd{h}{y}
             &=-\sum_{i=0}^{m-1} \left(\frac{1}{y_i+f_i}+\frac{1}{y_i-f_i}\right)\e_i^\tp.
     \end{align*}
 
@@ -2572,12 +2686,17 @@ deadzone or Huber.
 
 \subsection{Generalized Reformulations}
 
-There are several generalized problem reformulations.
+There are several possilbe reformulations of the general problem
+
+\begin{align}
+    \min_{x\in\dom} \quad J =f(x)\label{eqn:genprob}.
+\end{align}
 
 \subsubsection{Projection}
 
-    Consider nonlinear $f$, $f_\ub$, and $f_\eq$.  
-    Any problem can be stated as
+    If the $\dom$ in equation (\ref{eqn:genprob}) 
+    can be expressed in terms of $f_\ub$ and $f_\eq$,
+    then the general problem can be written as
     \begin{align*}
         \min_{x\in\R^n}\quad \|f(x)\|
     \end{align*}
@@ -2587,7 +2706,9 @@ There are several generalized problem reformulations.
         f_\eq(x)&=b_\eq.
     \end{align*}
 
-    Consider a one-to-one projective basis $h(x):\R^n\to\R^m$, and project over the domain $x\in\poly$ to get
+    Consider a one-to-one projective basis $h(x):\R^n\to\R^m$, 
+    and project over the domain $x\in\poly$ to get
+
     \begin{align*}
         f_{\phantom{\eq}}(x) & \approx A_{\phantom{\eq}} h(x),\\
         f_\ub(x) & \approx A_\ub h(x),\\
@@ -2595,31 +2716,16 @@ There are several generalized problem reformulations.
     \end{align*}
     where
     \begin{align*}
-        A_{\phantom{\eq}}&=\left(\int_{x\in\poly} f_{\phantom{\eq}}h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+,\\
-        A_\ub&=\left(\int_{x\in\poly} f_\ub h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+,\\
-        A_\eq&=\left(\int_{x\in\poly} f_\eq h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+.
+        A_{\phantom{\eq}}&=\textstyle\left(\int_{x\in\poly} f_{\phantom{\eq}}h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+,\\
+        A_\ub&=\textstyle\left(\int_{x\in\poly} f_\ub h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+,\\
+        A_\eq&=\textstyle\left(\int_{x\in\poly} f_\eq h^\tp dx\right)\left(\int_{x\in\poly} hh^\tp dx\right)^+.
     \end{align*}
 
     The problem can be approximated by
-    \begin{align*}
-        \min_{y\in\R^m}\quad \|Ay\|
-    \end{align*}
-    \begin{align*}
-        \st\quad y&\in\dom\\
-        A_\ub y&\leq b_\ub,\\
-        A_\eq y&=b_\eq,
-    \end{align*}
-    where
-    \begin{align*}
-        \dom = \{h(x)|x\in\poly\}.
-    \end{align*}
 
-    Alternatively, 
-    the problem can be approximated by the nonlinear constrained problem
-
-    \begin{align*}
+    \begin{align}
         \min_{\{x,y\}\in\{\R^n,\R^m\}}\quad \|Ay\|
-    \end{align*} 
+    \end{align} 
     \begin{align*}
         \st\quad x&\in\poly\\
         A_\ub y&\leq b_\ub,\\
@@ -2627,35 +2733,28 @@ There are several generalized problem reformulations.
         y&=h(x).
     \end{align*}
 
-    The penalty approach can be used to solve this problem.\\
 
-\clearpage
 
 \subsubsection{Epigraph}
-
-    Any problem is equivalent to
-
-    \begin{align*}
+The problem given by equation (\ref{eqn:genprob}) 
+is equivalent to the epigraph problem
+    \begin{align}
         \min_{\{x,y\}\in\{\R^n,\R\}} \quad J =y
-    \end{align*}
+    \end{align}
     \begin{align*}
-        \st\quad f(x)-y&\leq0\\
+        \st\quad f(x)-y&\leq0,\\
         x&\in\dom.
     \end{align*}
-
-\subsubsection{Indicator Function}
-
-    Any problem is equivalent to
-
-    \begin{align*}
+\subsubsection{Indicator}
+The problem given by equation (\ref{eqn:genprob}) 
+is equivalent to the indicator function problem
+    \begin{align}
         \min_{x\in\R^n}\quad f(x)
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad \ind(x\in\dom)&\leq0,
-    \end{align*}
-    
+    \end{align*}    
     where
-
     \begin{align*}
         \ind(x\in\dom)
         &=\left\{ \arr{
@@ -2664,19 +2763,72 @@ There are several generalized problem reformulations.
         }\right..
     \end{align*}
 
+\subsubsection{Exponential Substitution}
+
+% For $x\in\R^n$ and $\{y,z\}\in\{\R^n,\R^n\}$, let
+% \begin{align*}
+%     x&=y\circ e^z\quad \\
+%     &=y\circ\row\{e^{z_i}\}_{i=0}^{n-1}.
+% \end{align*}
+
+With $x_i=y_ie^{z_i}$, the problem given by equation (\ref{eqn:genprob}) can be solved with
+
+\begin{align}
+    \min_{y\:\circ\:\exp(z)\:\in\dom}\quad J = f(y\circ \exp(z))
+\end{align}
+\begin{align*}
+    \st\quad -\ones \leq y \leq \ones.
+\end{align*}
+
+The gradient and Hessian of $f(x):\R^n\to\R$ can be calculated with
+
+\begin{align*}
+    \pd{}{y_i}f&=g_i e^{z_i}&&=[g\circ e^z]_i, 
+    \\
+    \pd{}{z_i}f&=g_iy_ie^{z_i}&&=[g\circ y\circ e^z]_i,
+    \\
+    \pd{}{y_j}\pd{}{y_i} f&= H_{ij}e^{z_i+z_j}&&= [H\circ (e^z)(e^z)^\tp]_{ij},
+    \\
+    \pd{}{z_j}\pd{}{y_i} f&=  
+    H_{ij}y_je^{z_i+z_j} + g_ie^{z_i}\delta_{ij}&&= [H\circ (e^z)(y\circ e^z)^\tp+\diag(g\circ e^z)]_{ij},
+    \\
+    \pd{}{y_j}\pd{}{z_i} f&= H_{ij}y_ie^{z_i+z_j}+g_ie^{z_i}\delta_{ij}&&= [H\circ (y\circ e^z)(e^z)^\tp+\diag(g\circ e^z)]_{ij}
+    \\
+    \pd{}{z_j}\pd{}{z_i} f&= H_{ij}y_iy_je^{z_i+z_j}+g_iy_ie^{z_i}\delta_{ij}
+    &&
+    =[H\circ (y\circ e^z)(y\circ e^z)^\tp+\diag(g\circ y\circ e^z)]_{ij}
+\end{align*}
+where
+\begin{align*}
+    g_i=\pd{}{x_i}f,\quad
+    H_{ij}=\pd{}{x_i}\pd{}{x_j}f.
+\end{align*}
+
+\subsubsection{Invertable Nonlinearity}
+
+    If the problem given by equation (\ref{eqn:genprob}) has $f(x)=\|h(x)-y\|$, where $h(x)$ is invertable for all $x\in\dom$. Then,
+    
+    \begin{align}
+        \underset{x\in\dom}{\mathrm{argmin}}\quad \|h(x)-y\|\quad=\quad \underset{x\in\dom}{\mathrm{argmin}}\quad\|x-h^{-1}(y)\|.
+    \end{align}
+
+
 \subsection{Convex Programming}
+
+Some nonlinear problems are convex, 
+and some of the nonlinear convex problems have well-known solutions.
 
 For $i\in\Z[0,m]$ and convex $f_i(x)$, a general convex problem can be expressed as
 
-\begin{align*}
+\begin{align}
     \min_{x\in\R^n}\quad J = f_0(x)
-\end{align*}
+\end{align}
 \begin{align*}
     \st \quad f_i(x)&\leq 0,\\
     A x&=b.
 \end{align*}
 
-\note{The equality constraint must be linear \cite[p.~137]{bv_cvxbook}.}\\
+\note{The equality constraint must be linear \cite[p.~137]{bv_cvxbook}.}
 For $i\in\Z[1,m]$, the constraints define the set
 
 \begin{align*}
@@ -2689,10 +2841,13 @@ For all $i\in\Z[0,m]$, $x\in\dom$, $y\in\dom$, and $p\in\R[0,1]$, the problem is
     f_i(px+(1-p)y)&\leq p f_i(x)+(1-p)f_i(y).
 \end{align*}
 
+Any convex problem can be solved with interior point methods.
 
-Any convex problem can be solved with interior point methods.\\
+\clearpage
+
 Several convex problems are given special consideration with specialized simplifications and solutions,
 e.g.,
+
 \begin{itemize}
     \item \LP: Linear Programs,
     \item \QP: Quadratic Programs,
@@ -2702,26 +2857,25 @@ e.g.,
     \item \LMI: Linear Matrix Inequalities \cite[p.~169]{bv_cvxbook},
     \item \SDP: Semi Definite Programs \cite[p.~168]{bv_cvxbook}\cite{sdp}.
 \end{itemize}
+
 Solvers for each of these specialized convex problems can be found in many programming languages.\\
 It is often worth the effort to formulate a problem as one of these standard problems.
 
-\clearpage
 
 \subsubsection{\QCQP: Quadratic Constrained Quadratic Programming}
 
 For $i\in\Z[0,m-1]$, any convex \QCQP can be expressed as 
-\begin{align*}
+
+\begin{align}
     \min_{x\in\R^n}\quad J = \frac{1}{2} x^\tp Q x + c^\tp x
-\end{align*}
+\end{align}
 \begin{align*}
     \st\quad x\in\poly,\\
     \|A_i x-b_i\|_2^2&\leq 1.
 \end{align*}
 
-\note{If $A_i\in\R^{n\times n}$ with $\rank(A_i)=n$, \\
-then $\|A_i x-b_i\|_2^2 = \|A_i (x-A_i^{-1}b_i)\|_2^2$ is an ellipse centered at $y_i=A_i^{-1}b_i$ with covariance $(A_i^\tp A_i)^{-1}$.}
-
 A \QCQP can also be expressed as 
+
 \begin{align*}
     \min_{\{x,z_i\}\in\{\R^n,\R^{m_i}\}}\quad J = \frac{1}{2} x^\tp Q x + c^\tp x
 \end{align*}
@@ -2731,16 +2885,46 @@ A \QCQP can also be expressed as
     A_ix-z_i&=b_i.
 \end{align*}
 
+If $A_i\in\R^{n\times n}$ with $\rank(A_i)=n$, then 
+
+\begin{align*}
+    \|A_i x-b_i\|_2^2 &= \|A_i (x-A_i^{-1}b_i)\|_2^2\\
+    &=:(x-y_i)^\tp R_i^{-1} (x-y_i)
+\end{align*}
+
+is an ellipse centered at 
+
+\begin{align*}
+    y_i=A_i^{-1}b_i
+\end{align*}
+
+with covariance
+
+\begin{align*}
+    R_i=(A_i^\tp A_i)^{-1}.
+\end{align*}
+
+\note{
+If $\rank(A_i)<n$, SVD can be used to compute the elliptic subspace.
+}
+
+\clearpage
+
 \subsubsection{\SDP: Semi--Definite Programming}
 
 For $A_i\in\sym^n$ and $B\in\sym^n$, the primal \SDP is
+
+\begin{align}
+    \min_{x\in\R^n}\quad J &= c^\tp x
+\end{align}
 \begin{align*}
-    \min_{x\in\R^n}\quad J &= c^\tp x\\
     \st\quad \sum_{i=0}^{n-1} x_iA_i &\preceq B.
 \end{align*}
+
 This form is also known as an \LMI (linear matrix inequality).
 
 The Lagrangian is
+
 \begin{align*}
     L(x,Y)=c^\tp x +\trace{Y\sum_{i=0}^{n-1}x_iA_i}-\trace{YB},
 \end{align*}
@@ -2753,8 +2937,10 @@ with
 The dual equals the primal if the primal inequality is strictly feasible.
 The dual problem is given by 
 
+\begin{align}
+    \min_{Y\in\R^{n\times n}}\quad J &= \trace{BY}
+\end{align}
 \begin{align*}
-    \min_{Y\in\R^{n\times n}}\quad J &= \trace{BY}\\
     \st\quad \trace{A_iY}&=-c_i,\\
     Y&\succeq0,
 \end{align*}
@@ -2769,43 +2955,30 @@ gives inequality constraints of the form
 where $M_i$ are the principle minors of $Y$, i.e., $M_i=Y[0:i,0:i]$.
 
 If the \SDP is optimized with the interior point method,
+
 \begin{align*}
     \pd{}{Y}\tr(YB)&=B^\tp=B,\\
     \pd{}{Y}\log\det(M_i)&=\tr\left(M_i^{-1}\pd{M_i}{Y}\right).
 \end{align*}
 
 \note{If $B\in\sym^n$ and $Y\in\sym^n$, 
-$\trace{BY}=\sum_{i=0}^{n-1}\sum_{j=0}^{n-1}B_{ij}Y_{ij}=\vec{B}^\tp\vec{Y}$.}
 
-\note{$x^\tp Q x=\trace{Qxx^\tp}=\trace{QX}$ with $X\succeq0$ and $\rank(X)=1$.}
+$$\trace{BY}=\sum_{i=0}^{n-1}\sum_{j=0}^{n-1}B_{ij}Y_{ij}=\vec{B}^\tp\vec{Y}.$$}
 
-\clearpage
+\note{$$x^\tp Q x=\trace{Qxx^\tp}=\trace{QX}$$ 
 
-\subsection{Applications}
-
-Figure \ref{fig:ml} depicts many of the common applications in machine learning.
-All of these applications can be framed as optimization problems.
-Ideally, optimization should be convex for reliable performance.
-Some of these optimization problems can be cast as \LP or \QP,
-or they can be solved with iterative \LP or \QP methods.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1\textwidth]{./figs/np/ml.jpg}
-    \caption{Machine Learning}
-    \label{fig:ml}
-\end{figure}
+with $X\succeq0$ and $\rank(X)=1$.}
 
 \clearpage
 
 \section{Sigmoids}
 Sigmoids are a common form of nonlinearity in generalized machine learning applications.\\
-Many of them can be expressed as derivatives of the convex penalty functions discussed above.
+Many of them can be expressed as derivatives of the convex penalty functions discussed earlier.
 
 \subsection{Boolean Sigmoids}
 
     Boolean sigmoids map $\sig:\R\to\R[0,1]$.
-    Figure \ref{fig:relu_sig} shows a sigmoid computed from the gradient of ReLu, and Figure \ref{fig:soft_relu_sig} shows a sigmoid computed from
+    Figure \ref{fig:relu_sig} shows a sigmoid computed from the gradient of ReLu, and figure \ref{fig:soft_relu_sig} shows a sigmoid computed from
     the gradient of a right-sidded Huber penalty.
     \begin{figure}[h!]
         \centering
@@ -2821,14 +2994,14 @@ Many of them can be expressed as derivatives of the convex penalty functions dis
     \end{figure}
 
     The logistic sigmoid is defined as
-    \begin{align*}
+    \begin{align}
         \sig(u) &= (1+e^{-u})^{-1},
-    \end{align*}
+    \end{align}
     with
     \begin{align*}
         \sig'(u)&=\sig(1-\sig),\\
         \sig''(u)&=\sig(1-\sig)^2-\sig^2(1-\sig),\\
-        \int s(u) du&= \log(1+e^u).
+        \int s(u) du&= \log(1+e^u)\quad\approx\max(0,u).
     \end{align*}
     \note{This function curves primarily for $u\in\R[-2\pi,2\pi]$.}
     \begin{figure}[h!]
@@ -2847,14 +3020,14 @@ Many of them can be expressed as derivatives of the convex penalty functions dis
 
 
 There are many ways to obtain an s--shaped curve.  Consider a piecewise polynomial given by
-\begin{align*}
+\begin{align}
     \sig_n(u)=\left\{
         \arr{
             \sum_{i=0}^{2n+1} (a_i/i!)u^i & \text{if}\quad u\in\R[-1,1]
             \\
             \sign(u) & \text{else}
         }\right., 
-\end{align*}
+\end{align}
 where $\sig (-1)=-1$, $\sig (1)=1$, and all derivatives at $u\in\{-1,1\}$ are zero.
 For $n\in\Z[0,3]$ and $|u|<1$, this gives
 \begin{align*}
@@ -2863,7 +3036,7 @@ For $n\in\Z[0,3]$ and $|u|<1$, this gives
     \sig_2(u)&=(15 u - 10 u^3 + 3 u^5)/8,\\
     \sig_3(u)&=(35 u - 35 u^3 + 21 u^5 - 5 u^7)/16,
 \end{align*}
-Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
+figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 \note{The Huber penalty function at $t=1$ is given by $f_0=\int s_0(u)du$.}
 
 \begin{figure}[h!]
@@ -2943,11 +3116,11 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
     \subsection{Deadzone Sigmoid}
         For the deadzone penalty $f(u)$, consider the sigmoid function given by
-        \begin{align*}
-            \sig(u)&=\frac{f(u)}{u}\\
+        \begin{align}
+            \sig(u)&=\frac{f(u)}{u}\nonumber\\
             &=
             \left\{\arr{0 & \text{if $|u|\leq t$} \\ \sign(u)-t/u & \text{else}}\right..
-        \end{align*}
+        \end{align}
         Figure \ref{fig:deadzone_sigmoid} plots the sigmoid curve. 
         \note{In the limit of $|u|\to\infty$, the sigmoid approaches $\sign(u)$ asymptotically.} 
         \\
@@ -2993,11 +3166,11 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 \subsection{Huber Sigmoid}
     For the Huber penalty $f(u)$, 
     consider the sigmoid function given by
-    \begin{align*}
-        \sig(u)&=\frac{f(u)}{2u}\\
+    \begin{align}
+        \sig(u)&=\frac{f(u)}{2u}\nonumber\\
         &=\frac{1}{2}
         \left\{\arr{u & \text{if $|u|\leq t$} \\ 2t\:\sign(u)-t^2/u & \text{else}}\right..
-    \end{align*}
+    \end{align}
     Figure \ref{fig:huber_sigmoid} plots the sigmoid curve.\\
     \note{In the limit of $|u|\to\infty$, the sigmoid approaches $\sign(u)$ asymptotically.}
     \note{The asymptotic approach is much slower than  a logistic sigmoid.}\\
@@ -3040,33 +3213,44 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{figure}
     \clearpage
 
-\subsection{Misc. Sigmoids}
+\subsection{Miscellaneous Sigmoids}
+
 \subsubsection{Trig Sigmoids}
+
+Figures \ref{fig:sig_atan} and \ref{fig:sig_tanh} show two common trigonometric sigmoids.
+
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/atan.png}
         \caption{$\sig(u)=2\:\text{atan}(u)/\pi$}
         \label{fig:sig_atan}
     \end{figure}
+
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/tanh.png}
         \caption{$\sig(u)=\text{tanh}(u)$}
         \label{fig:sig_tanh}
     \end{figure}
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.7\textwidth]{./figs/nn/sig/gd.png}
-        \caption{$\sig(u)=2\:\text{atan}\left(\text{tanh}(u/2)\right)$}
-        \label{fig:sig_gd}
-    \end{figure}
+
+    % \begin{figure}[h!]
+    %     \centering
+    %     \includegraphics[width=0.7\textwidth]{./figs/nn/sig/gd.png}
+    %     \caption{$\sig(u)=2\:\text{atan}\left(\text{tanh}(u/2)\right)$}
+    %     \label{fig:sig_gd}
+    % \end{figure}
 \subsubsection{Exponential Sigmoids}
+
+Figures \ref{fig:sig_exp} and \ref{fig:sig_Gauss} show two common exponential sigmoids.
+
+
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/exp.png}
         \caption{$\sig'(u)=\exp(-|u|)$}
         \label{fig:sig_exp}
     \end{figure} 
+
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/Gauss.png}
@@ -3078,7 +3262,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
 \subsubsection{Ramp Sigmoid}
     Ramp velocity profiles are common in robotics applications,
-    e.g. Figure \ref{fig:sig_ramp}.
+    e.g. figure \ref{fig:sig_ramp}.
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/trap.png}
@@ -3087,6 +3271,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{figure} 
 
 \subsubsection{Parabolic Sigmoids}
+% Figure \ref{fig:sig_parabola} shows a sigmoid that is constructed from the square root of a parabolic arc.
     \begin{figure}[h!]
         \centering
         \includegraphics[width=0.7\textwidth]{./figs/nn/sig/parabola.png}
@@ -3097,7 +3282,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 \subsubsection{Reciprocal Sigmoids}
 
     To obtain sigmoids with slow asymptotic convergence,
-    consider reciprocal functions, e.g., linear--reciprocal (Figure \ref{fig:sig_inv_lin})
+    consider reciprocal functions, e.g., linear--reciprocal (figure \ref{fig:sig_inv_lin})
     \begin{align*}
         s(u)&=
         \left\{
@@ -3107,7 +3292,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
         }    
         \right.,
     \end{align*}
-    or log--reciprocal (Figure \ref{fig:sig_inv_log})
+    or log--reciprocal (figure \ref{fig:sig_inv_log})
     \begin{align*}
         s(u)&=
         \left\{
@@ -3202,8 +3387,8 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{align*}
     where
     \begin{align*}
-        J(x,y)&=\frac{1}{2}\|\sig(Ax -b)-y \|_{2,W(x,y)}^2\\
-        &=\frac{1}{2}\|z-y \|_{2,W(x,y)}^2,            
+        J(x,y)&=\frac{1}{2}\|\sig(Ax -b)-y \|_{2|W(x,y)}^2\\
+        &=\frac{1}{2}\|z-y \|_{2|W(x,y)}^2,            
     \end{align*}
     and
     \begin{align*}
@@ -3237,8 +3422,8 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{align*}
     where
     \begin{align*}
-        J(x,y)&=\frac{1}{2}\|\sig(A_1\sig(A_0x -b_0)-b_1)-y \|_{2,W(x,y)}^2\\
-        &=\frac{1}{2}\|z_1-y \|_{2,W(x,y)}^2,        
+        J(x,y)&=\frac{1}{2}\|\sig(A_1\sig(A_0x -b_0)-b_1)-y \|_{2|W(x,y)}^2\\
+        &=\frac{1}{2}\|z_1-y \|_{2|W(x,y)}^2,        
     \end{align*}
     and
     \begin{align*}
@@ -3275,8 +3460,8 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{align*}
     where
     \begin{align*}
-        J(x,y)&=\frac{1}{2}\|\sig(A_2\sig(A_1\sig(A_0x-b_0)-b_1)-b_2)-y \|_{2,W(x,y)}^2\\
-        &=\frac{1}{2}\|z_2-y \|_{2,W(x,y)}^2,
+        J(x,y)&=\frac{1}{2}\|\sig(A_2\sig(A_1\sig(A_0x-b_0)-b_1)-b_2)-y \|_{2|W(x,y)}^2\\
+        &=\frac{1}{2}\|z_2-y \|_{2|W(x,y)}^2,
     \end{align*}
     and
     \begin{align*}
@@ -3309,7 +3494,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \end{align*}
     where
     \begin{align*}
-        J(x,y)=\frac{1}{2}\|z_{n-1}-y \|_{2,W(x,y)}^2.
+        J(x,y)=\frac{1}{2}\|z_{n-1}-y \|_{2|W(x,y)}^2.
     \end{align*}
     For $i\in\Z[1,n-1]$,
     \begin{align*}
@@ -3343,7 +3528,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     \begin{align*}
         \min_{\{z_i(x),A_i,b_i\}\in\{\R^{m_i},\R^{m_i\times m_{i-1}},\R^{m_i}\}}
         \quad \sum_{\{x,y\}}
-        J (x,y)&=\frac{1}{2}\|z_{n-1}-y \|_{2,W(x,y)}^2,
+        J (x,y)&=\frac{1}{2}\|z_{n-1}-y \|_{2|W(x,y)}^2,
     \end{align*}
     with
     \begin{align*}
@@ -3423,7 +3608,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
         s(u)=(1+e^{-u})^{-1}.
     \end{align*}
 
-\clearpage
+\clearpage 
 
 \section{MPC: Model Predictive Control}
 
@@ -3442,19 +3627,19 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     The models may be nonlinear or generalized deep neural networks, but if they can
     be expressed as linear, then \QP can be used to solve them in one iteration.
     Time will be analyzed on a sliding window where $t=0$ depicts the present 
-    (Figure \ref{fig:world_model_time}).
+    (figure \ref{fig:world_model_time}).
     The world takes input and produces output over this moving time window
-    (Figure \ref{fig:world_model_world}).
+    (figure \ref{fig:world_model_world}).
     It is assumed that the world has some hidden internel dynamic states
     that need to be determined.  
     The quantitative expression of these states depends on the model
     chosen to approximate the world.  An estimator uses the model and the observed
     input and output history to produce a best current guess of the dynamic and constant
-    hidden states (Figure \ref{fig:world_model_estimator}).
+    hidden states (figure \ref{fig:world_model_estimator}).
     Once the current best guess is given for the states,
     the controller uses the model along with target
     input and output to find the optimal future input
-    (Figure \ref{fig:world_model_controller}).
+    (figure \ref{fig:world_model_controller}).
     These calculations are done each time step on hardware, 
     \begin{itemize}
         \item estimating $z_0^*$ and $\theta^*$ from $u[-T,0)$ and $y[-T,0]$,
@@ -3707,7 +3892,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
         \min_{x\in\R^{(n+m)q}}\quad\quad J&=\sum_{i=0}^{q-1}
         \left\|z_{i+1}-z_{i+1}^\circ\right\|_{P_{i+1}^{1/2}}^2
         +\left\|u_i-u_i^\circ\right\|_{R_i^{1/2}}^2\\
-        \text{s.t.}\quad z_{i+1} &= f(t_i,z_i,u_i),\\
+        \st\quad z_{i+1} &= f(t_i,z_i,u_i),\\
             z_{0} & = \text{fixed}.
     \end{align*}
 
@@ -3722,7 +3907,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
     The penalty approach gives
     \begin{align*}
-        \min_{x\in\R^{(m+n)q}}\quad J = \|x-x^\circ\|_{2,W}^2 + \|f- Fx \|_{2,M}^2,
+        \min_{x\in\R^{(m+n)q}}\quad J = \|x-x^\circ\|_{2|W}^2 + \|f- Fx \|_{2|M}^2,
     \end{align*}
     where
     \begin{align*}
@@ -3731,7 +3916,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
     The gradient is
     \begin{align*}
-        g^\tp&=\grad J^\tp\\
+        g^\tp&=\grad^\tp J\\
         &=2(x-x^\circ)^\tp W^\tp W + 2(f-Fx)^\tp M^\tp M\left(h-F\right),
     \end{align*}
     where 
@@ -3877,7 +4062,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
             \\
             \vec{B}
         \end{array}\right].
-    \end{align*}
+    \end{align*} 
 
     \note{Previous estimates of $x$ can be added to the objective function with
 
@@ -3898,7 +4083,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
     Including the prediction uncertainty into the cost weight typically aleviates this.
     The indexed time sample does not need to be uniform.
     Figure \ref{fig:time_tree} shows a 3-layer sample.  Alternatively,
-    a continuous exponential time sample can be used (depicted in Figure \ref{fig:exp_time}).
+    a continuous exponential time sample can be used (depicted in figure \ref{fig:exp_time}).
     Only layerd samples are implamentable on hardware.
 
 
@@ -3945,7 +4130,7 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
 \subsubsection{Variable--Time Step}
 
-    For a variable $d_i\geq0$, the problem can be re--expressed as
+    For a variable $d_i\geq0$, the problem can be re--expressed as the nonlinear problem
     \begin{align*}
         \min_{x\in\R^{(n+m+1)q}}\quad J(x)&=\sum_{i=0}^{q-1}  J (t_i,z_i,u_i) d_i
     \end{align*}
@@ -3972,14 +4157,11 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
 
 \subsubsection{Chance-Constrained MPC}
 
-    Random variables can be added to both the objective function and the constraints, e.g.,
-    \begin{align*}
-        z_{i+1} = z_i+(d_i+\rand{d}_i)f(z_i,u_i+\rand{u}_i,\rand{w}_i)+\rand{v}_i.
-    \end{align*}
-
+    Random variables can be added to both the objective function and the constraints.  
+    These can include random variables in the time step, input, current state, or model.  These random variables may be time dependent. 
     A probablistic formulation of MPC can include 
     constraints that minimize the probability of failure, 
-    as defined by the probability of going outside of $x\in\poly$.
+    as defined by the probability of going outside of $x\in\dom$.
     Interesting examples include: \cite{chance} and  \cite{chance2}.
     For $p\in\R(0,1)$, the generalized problem formulation is
 
@@ -3995,55 +4177,103 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
         \min_{\{z,u\}\in\{\R^{nq},\R^{mq}\}}\quad J&=\E{ J _q(z_q)+\sum_{i=0}^{q-1}  J _i(z_i,u_i)}
     \end{align*}
     \begin{align*}
-        \st\quad &\left.\left\langle\sum_{i=1}^{q} \bin\left(z_i\notin\dom_i\right)\right | z_0\right\rangle\leq p,\\
+        \st\quad &\left.\left\langle\prod_{i=1}^{q} \bin\left(z_i\in\dom_i\right)\right | z_0\right\rangle\geq 1-p,\\
         z_{i+1}&=f(z_i,u_i,\rand{w}_i),
     \end{align*}
 
-\subsection{PDE: Partial Differential Equation}
-
-    PDE problems optimize free variables which are differentially constrained over time and space.
-    This differes from MPC which has only time, resulting in only 1 index.  
-    Adding space results in $m>1$ indicies.
-    There are many potential applications including:
-    \begin{itemize}
-        \item eletro--magnetics,
-        \item thermo--dynamics,
-        \item surfaces optimization,
-        \item classical mechanics,
-        \item quantum mechanics. 
-    \end{itemize}
+\subsection{Smooth Reconstruction}
+    Consider the difference vector
+    \begin{align*}
+        \mat{x_1-x_0\\x_2-x_1\\\vdots\\x_{n-2}-x_{n-3}\\x_{n-1}-x_{n-2}}
+        &=\left[\begin{array}{rrrrrrr}
+            -1 & 1 & 0 & \cdots & 0 & 0 & 0\\
+            0& -1 & 1 & \cdots & 0 & 0 & 0\\
+            \vdots & \vdots & \vdots &  & \vdots & \vdots & \vdots\\
+            0 & 0 & 0 & \cdots & -1 & 1 & 0\\
+            0 & 0 & 0 & \cdots & 0 & -1 & 1
+        \end{array}\right]\mat{x_0\\x_1\\x_2\\\vdots\\x_{n-3}\\x_{n-2}\\x_{n-1}}\\
+        &=\underbrace{\left(\mat{\zeros^{n-1}&\eye_{n-1}}-\mat{\eye_{n-1} & \zeros^{n-1}}\right)}_{D_n}x,
+    \end{align*}
+    where $D_n\in\R^{n-1\times n}$.
+    Reconstruction using derivative penalty is computed with
     
-    Consider optimizing the $f$ in $f(x)$, not the $x$.  When discretized, $x$ becomes the index.
-    The first step is to remap the domain of $x$ to the unit cube.  Then, for $x_i\in\R[0,1]^m$, $\Delta x_i=1/n$.
-    Integration of a function of $f(x)$ involves $m$ summations over $\Z[0,n-1]$ divided by $n^m$.
-    The partial across any of the $x_i$ is simply $n$ times the difference across that index.
-    For irregular shapes within the unit cube, only formulate the problem for indices that occur within the shape.
+    \begin{align}
+        \min_{x\in\R^n}\quad J &= \|x-y\|+\lambda \|D_nx\|.
+    \end{align}
+    \subsubsection{Quadratic Smoothing}
+    Minimum quadratic smoothing is computed with
+    \begin{align*}
+        \min_{x\in\R^n}\quad J &= \|x-y\|_2^2+\lambda \|D_nx\|_2^2,
+    \end{align*}
+    which has the closed form solution
+    \begin{align*}
+        x=(\eye_n+\lambda D_n^\tp D_n)^{-1}y.
+    \end{align*}
+    \subsubsection{Total Varation}
+    Minimum total variation is computed with
+    \begin{align*}
+        \min_{x\in\R^n}\quad J = \|x-y\|_2^2+\lambda \|D_nx\|_1.
+    \end{align*}
 
-    \subsubsection{Optimal Heat Diffusion}
+\clearpage
+\section{PDE: Partial Differential Equation}
+
+    PDE problems optimize free variables which are differentially 
+    constrained over time and state--space.
+    This differes from MPC only have 1 index corresponding to time.  
+    Adding state--space results multiple indicies.
+    There are many potential applications including:
+    eletro--magnetics, thermo--dynamics, surface optimization, classical mechanics, 
+    and quantum mechanics. Many interesting PDEs can be expressed as \LP or \QP. 
+    
+    Consider optimizing the $f$ in $y=f(x)$.  When discretized, $x$ becomes the index
+    and $y$ becomes the free variable to be solved.
+    To converte a PDE to a discrete problem:
+    \begin{itemize}
+        \item Remap the domain 
+            \begin{align*}
+            X=\{x\in\R^n\:|\:x_i\in\R[a_i,b_i]\}
+        \end{align*}
+            to the unit cube $\R[0,1]^n$.
+        \item For $x_i\in\R[0,1]$, let $\Delta x_i=1/n$.
+        \item Integration of a function of $f(x)$ involves $m$ summations over $\Z[0,n-1]$ divided by $n^m$.
+        \item The partial derivatives across any of the $x_i$ is $n$ times the difference across that index.
+    \end{itemize}
+
+    \note{Integration and differentiation are linear operations.}
+
+    \subsection{Optimal Heat Diffusion}
     Consider $f:\R[0,1]^2\to\R$ with the Laplace diffusion problem
 
     \begin{align*}
-        \min\quad J = \int_{ x\in\R[0,1]^2  } g(f(x)) dx
+        \min_f\quad J = \int_{ \R[0,1]^2  } g(x,f(x)) dx
     \end{align*}
     \begin{align*}
         \st\quad &\pd{f}{x_1}+\pd{f}{x_2}=0,\\
         &\text{Boundary}(f) = \text{fixed}.
     \end{align*}
 
-    Let $f_{ij}$ denote the value of $f$ at  $x=\mat{i/n \\ j/n}$ 
-    for $\mat{i\\j}\in\Z[0,n-1]^2$.
-
+    Let $y_{ij}$ denote the value of $f(x_{ij})$ at  
+    
     \begin{align*}
-        \min_{f\in\R^{n\times n}}\quad J&=\frac{1}{n^2}\sum_{i=0}^{n-1}\sum_{j=0}^{n-1} g(f_{ij})
-    \end{align*}
-    \begin{align*}
-        \st\quad n(f_{i+1,j}-f_{ij})+n(f_{i,j+1}-f_{ij})&=0\\
-        f&\in\dom.
+        x_{ij}=\mat{i/n \\ j/n},\quad \mat{i\\j}\in\Z[0,n-1]^2.
     \end{align*}
 
-    If $\dom=\poly$ and $g(\cdot)$ is linear or quadratic, this can be solved as an \LP or \QP.    
+    The Laplace diffusion problem can be approximated by
+    \begin{align*}
+        \min_{y\in\R^{n\times n}}\quad J&=\frac{1}{n^2}\sum_{i=0}^{n-1}\sum_{j=0}^{n-1} g(x_{ij},y_{ij})
+    \end{align*}
+    \begin{align*}
+        \st\quad y_{i+1,j}+y_{i,j+1}-2y_{ij}&=0\\
+        y&\in\dom.
+    \end{align*}
 
-    \subsubsection{Minimum Surface}
+    \note{
+        If $\dom=\poly$ and $g(\cdot)$ is linear or quadratic, this can be solved as an \LP or \QP.    
+    }
+
+\clearpage
+\subsection{Minimum Surface Area}
     Consider $f:\R[0,1]^2\to\R$ with surface area \cite[p.~159]{bv_cvxbook}
 
     \begin{align*}
@@ -4051,56 +4281,63 @@ Figures \ref{fig:poly0}--\ref{fig:poly3} show $n\in\Z[0,3]$.\\
         &=\int_{\R[0,1]^2}\left\|\mat{\grad f(x)\\1}\right\|_2dx.
     \end{align*}
 
-    The minimum surface problem is to find $f$ that minimizes $A$ subject to boundary constraints.
-    Let $f_{ij}$ denote the value of $f$ at  $x=\mat{i/n \\ j/n}$ 
-    for $\mat{i\\j}\in\Z[0,n-1]^2$.  An approximate expression for the gradient of $f$ is 
+    The minimum surface problem is to find $f$ that minimizes $A$ subject to boundary constraints.\\
+    Let $y_{ij}$ denote the value of $f(x_{ij})$ at 
+    
+    \begin{align*}
+        x=\mat{i/n \\ j/n},\quad  \mat{i\\j}\in\Z[0,n-1]^2.
+    \end{align*}
+    
+    An approximate expression for the gradient of $f$ is 
 
     \begin{align*}
-        \grad f(x)\approx n \mat{f_{i+1,j}-f_{i,j}\\f_{i,j+1}-f_{i,j}},
+        \grad f(x)\approx n \mat{y_{i+1,j}-y_{i,j}\\y_{i,j+1}-y_{i,j}},
     \end{align*}
     which gives
     \begin{align*}
         A&\approx\frac{1}{n^2}\sum_{i=0}^{n-1}\sum_{j=0}^{n-1}
-        \left\|\mat{ nf_{i+1,j}-f_{i,j}\\ nf_{i,j+1}-f_{i,j} \\1}\right\|_2.
+        \left\|n\mat{ y_{i+1,j}-y_{i,j}\\ y_{i,j+1}-y_{i,j} \\1/n}\right\|_2.
     \end{align*}
 
     The problem can then be stated as
 
     \begin{align*}
-        \min_{f\in\R^{n\times n}}\quad J = A
+        \min_{y\in\R^{n\times n}}\quad J = A
     \end{align*}
     \begin{align*}
-        \st\quad f\in\dom,
+        \st\quad y\in\dom,
     \end{align*}
 
     which, if $\dom=\poly$, can be recast as the \SOCP if 
 
     \begin{align*}
-        \min_{\{f,t\}\in\{\R^{n\times n},\R^{n\times n}\}}\quad J = \frac{1}{n^2}\sum_{i=0}^{n-1}\sum_{j=0}^{n-1} t_{ij}
+        \min_{\{y,t\}\in\{\R^{n\times n},\R^{n\times n}\}}\quad J = \frac{1}{n^2}\sum_{i=0}^{n-1}\sum_{j=0}^{n-1} t_{ij}
     \end{align*}
     \begin{align*}
         \st\quad f&\in\poly,\\
-        \left\|\mat{ n(f_{i+1,j}-f_{i,j})\\ n(f_{i,j+1}-f_{i,j}) \\1}\right\|_2&\leq t_{ij},
+        \left\|\mat{ y_{i+1,j}-y_{i,j}\\ y_{i,j+1}-y_{i,j} \\1/n}\right\|_2&\leq t_{ij}/n,
     \end{align*}
 
-    which can be converted to a \QCQP by squaring the conic constraints.\\
-    \note{At this point, additional quadratic constraints can be added to $\dom$.}
+    which can be converted to a \QCQP by squaring the conic constraints.
 
+    \note{At this point, additional linear and quadratic constraints can be added to $\dom$.}
 
-\clearpage
+    \clearpage
 
 \section{SVM: Support Vector Machines}
 
+    \subsection{SVM Models}
+
     For $x\in\R^n$, an SVM classifies with
-    \begin{align*}
+    \begin{align}
         \svm (x) &= \left\{
             \arr{ 
                 \minus1 & \text{if $a^\tp x - b > 0$} \\ 
                 -1 & \text{if $a^\tp x - b < 0$} \\                
                 -1+2\rand{r} & \text{else} }
             \right.,
-    \end{align*}
-    where $\rand{r}\sim\text{Bernoulli}(1/2)$.
+    \end{align}
+    where $\rand{r}\sim\text{Bernoulli}(1/2)$, i.e., flip a fair coin.
     Figure \ref{fig:svm} illustrates this classification. 
 
     There are many ways to optimizate an SVM.  
@@ -4415,8 +4652,8 @@ There is a computational advantage to using the dual if the $m$ samples are smal
         a^\tp x &= \sum_{i=0}^{m-1} z_i^* y_i x_i^\tp x.
     \end{align*}
 
-    For each $z_i>0$, $x_i$ is on the margin. Solve $b_i$ with $b_i=y_i-x_i^\tp a$.
-    Then compute $b=\text{mean}(b_i)$.
+    If $z_i^*>0$, $x_i$ is on the margin (by complamentary slackness) and $b_i^*=y_i-x_i^\tp a^*$.
+    Compute $b^*=\text{mean}(b_i^*)$.
 
     \clearpage
 \subsubsection{Soft Dual}
@@ -4493,8 +4730,8 @@ There is a computational advantage to using the dual if the $m$ samples are smal
         a^\tp x &= \sum_{i=0}^{m-1} z_i^* y_i x_i^\tp x.
     \end{align*}
 
-    For each $z_i\in\R(0,\lambda)$, $x_i$ is on the margin. Solve $b_i$ with $b_i=y_i-x_i^\tp a^*$.
-    Then compute $b^*=\text{mean}(b_i)$.
+    If $z_i^*\in\R(0,\lambda)$, $x_i$ is on the margin (by complamentary slackness) and $b_i^*=y_i-x_i^\tp a^*$.
+    Compute $b^*=\text{mean}(b_i^*)$.
 
 \subsubsection{Soft Dual (Alternative)}
 
@@ -4566,8 +4803,7 @@ There is a computational advantage to using the dual if the $m$ samples are smal
     Some popular kernels include:
     \begin{itemize}
         \item polynomials of degree $q$, computed with $(u_i^\tp u_j+1)^q$,
-        \item sigmoid functions computed from $u_i^\tp u_j$,
-        \item radial basis functions computed from $\text{dist}(u_i,u_j)$.
+        \item radial basis functions computed from $\text{dist}(u_i,u_j)$, e.g., $\|u_j-u_i\|_p$.
     \end{itemize}
 
     \clearpage
@@ -4579,7 +4815,7 @@ There is a computational advantage to using the dual if the $m$ samples are smal
         \label{fig:svm_kernel}
     \end{figure}
 
-\subsubsection{Recovering Bias}
+\subsubsection{Bias}
 
     Sort $x_i$ with label $+1$ 
     and $y_j$ with label $-1$.
@@ -4659,15 +4895,15 @@ There is a computational advantage to using the dual if the $m$ samples are smal
     For samples $i\in\Z[0,q-1]$, find a linear map from $x_i\in\R^n$ 
     to $y_i\in\R^m$ with minimum non--zero paramaters. \\
     This objective can be expressed as
-    \begin{align*}
+    \begin{align}
             \min_{A\in\R^{m\times n}}
         \quad 
         J
         &=
         \lambda\|\vec{A }\|_1
         +
-        \textstyle\sum_{i=0}^{q-1} \| A  x_i - y_i \|_{2,W_i}^2.
-    \end{align*}
+        \textstyle\sum_{i=0}^{q-1} \| A  x_i - y_i \|_{2|W_i}^2.
+    \end{align}
     Vectorizing from left to right and top to bottom and using the Kronecker product, 
     the objective function becomes
     \begin{align*}
@@ -4675,7 +4911,7 @@ There is a computational advantage to using the dual if the $m$ samples are smal
         &=
         \lambda\|\vec{A }\|_1
         +
-        \textstyle\sum_{i=0}^{q-1} \|(\eye_m\otimes x_i^\tp)\vec{A} - y_i\|_{2,W_i}^2\\
+        \textstyle\sum_{i=0}^{q-1} \|(\eye_m\otimes x_i^\tp)\vec{A} - y_i\|_{2|W_i}^2\\
         &=
         \frac{1}{2}
         \vec{A}^\tp Q \vec{A} + c^\tp \vec{A} + r + \lambda\|\vec{A}\|_1
@@ -4722,7 +4958,7 @@ There is a computational advantage to using the dual if the $m$ samples are smal
     \end{align*}
     which can be expressed as
     \begin{align*}
-        \min_{\{y,z\}\in\{\R^n,\R\}}\quad J & = \mat{a \\ b}^\tp \mat{y \\ z}
+        \min_{\{y,z\}\in\{\R^n,\R\}}\quad J & = \mat{\minus a \\ -b}^\tp \mat{y \\ z}
     \end{align*}
     \begin{align*}
         \st\quad \mat{A_\ub & -b_\ub \\ \zeros^{1\times n} & -1 }\mat{y\\z}&
@@ -4821,9 +5057,9 @@ There is a computational advantage to using the dual if the $m$ samples are smal
     \end{figure}
 
     The problem
-    \begin{align*}
+    \begin{align}
         \min_{\{x_1,x_2\}\in\{\R^n,\R^n\}}\quad J &= \|x_1-x_2\|_p
-    \end{align*}
+    \end{align}
     \begin{align*}
         \st\quad x_1&\in\poly_1,\\
         x_2&\in\poly_2,
@@ -4836,7 +5072,7 @@ There is a computational advantage to using the dual if the $m$ samples are smal
     a sparse representation of 
     $B=A^+$ 
     can be computed using \cite{spinv}
-    \begin{align*}
+    \begin{align}
         \min_{B\in\R^{n\times m}}\quad
         J
         &=
@@ -4847,8 +5083,8 @@ There is a computational advantage to using the dual if the $m$ samples are smal
         &=
             \|(\eye _n\otimes A^\tp)\vec{B}-\vec{\eye}_n\|_2^2
         +
-            \lambda\|\vec{B}\|_1.
-    \end{align*}
+            \lambda\|\vec{B}\|_1.\nonumber
+    \end{align}
 
     \note{If $A\in\sym_{+}^n$, then $B = A^{-1}\in\sym_{+}^n$, 
     where the symmetry can be enforced with the constraint $B=B^\tp$.}
@@ -4864,8 +5100,8 @@ and many potential cluster may exist.
 Convergence to a particular cluster depends on the initialization of the
 algorithm.  Many different norms may be considered. 
 Different norms create different cell geometries.  
-A 2--norm creates convex polyhedron cells (see Figure \ref{fig:voronoi}),
-but a 1--norm creates non-convex cells (see Figure \ref{fig:l1_voronoi}).
+A 2--norm creates convex polyhedron cells (see figure \ref{fig:voronoi}),
+but a 1--norm creates non-convex cells (see figure \ref{fig:l1_voronoi}).
 
     \begin{algorithm}[H]
         \SetAlgoLined
@@ -4980,7 +5216,7 @@ but a 1--norm creates non-convex cells (see Figure \ref{fig:l1_voronoi}).
     with $a = 2(x_1-x_0)$ and $b=x_1^\tp x_1 - x_0^\tp x_0$.
     }
 
-\subsection{Noisy Unkown Nonlinear Maps}
+\subsection{Noisy Unknown Nonlinear Maps}
 
     For $i\in\Z[0,m-1]$, consider
     \begin{align*}
@@ -4989,7 +5225,7 @@ but a 1--norm creates non-convex cells (see Figure \ref{fig:l1_voronoi}).
     where $x\in\R^n$ is a vector to be estimated,
     $\{y_i,a_i,b_i\}\in\{\R,\R^n,\R\}$ are measured,
     and $\rand{w}_i$ is IID.
-    The function $f:\R\to\R$ is unkown, but it is known that
+    The function $f:\R\to\R$ is unknown, but it is known that
     $f'\in\R[c,d]$ with $0<c<d$. Solving for $\rand{w}_i$,
 
     \begin{align*}
@@ -5031,47 +5267,6 @@ but a 1--norm creates non-convex cells (see Figure \ref{fig:l1_voronoi}).
     \end{align*}
 
 
-    \clearpage
-
-\subsection{Reconstruction}
-Consider the difference vector
-\begin{align*}
-    \mat{x_1-x_0\\x_2-x_1\\\vdots\\x_{n-2}-x_{n-3}\\x_{n-1}-x_{n-2}}
-    &=\left[\begin{array}{rrrrrrr}
-        -1 & 1 & 0 & \cdots & 0 & 0 & 0\\
-        0& -1 & 1 & \cdots & 0 & 0 & 0\\
-        \vdots & \vdots & \vdots &  & \vdots & \vdots & \vdots\\
-        0 & 0 & 0 & \cdots & -1 & 1 & 0\\
-        0 & 0 & 0 & \cdots & 0 & -1 & 1
-    \end{array}\right]\mat{x_0\\x_1\\x_2\\\vdots\\x_{n-3}\\x_{n-2}\\x_{n-1}}\\
-    &=\underbrace{\left(\mat{\zeros^{n-1}&\eye_{n-1}}-\mat{\eye_{n-1} & \zeros^{n-1}}\right)}_{D}x,
-\end{align*}
-where $D\in\R^{n-1\times n}$.
-Reconstruction using derivative penalty is computed with
-
-\begin{align*}
-    \min_{x\in\R^n}\quad J &= \|x-x_{\text{data}}\|+\lambda \|Dx\|.
-\end{align*}
-\subsubsection{Quadratic Smoothing}
-Minimum quadratic smoothing is computed with
-\begin{align*}
-    \min_{x\in\R^n}\quad J &= \|x-x_{\text{data}}\|_2^2+\lambda \|Dx\|_2^2,
-\end{align*}
-which has the closed form solution
-\begin{align*}
-    x=(\eye_n+\lambda D^\tp D)^{-1}x_{\text{data}}.
-\end{align*}
-\subsubsection{Total Varation}
-Minimum total variation is computed with
-\begin{align*}
-    \min_{x\in\R^n}\quad J = \|x-x_{\text{data}}\|_2^2+\lambda \|Dx\|_1.
-\end{align*}
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=.9\textwidth]{./figs/misc/tov.jpg}
-    \caption{Total varation reconstruction on left from corrupted image on right.}
-    \label{fig:tov}
-\end{figure}
 
 \clearpage
 
@@ -5110,7 +5305,7 @@ Minimum total variation is computed with
         (A_\eq A)&y = (b_\eq+A_\eq b).
     \end{align*}
 
-\subsection{Full-Rank Inverse}
+\subsubsection{Full-Rank Inverse}
 
     For $A\in\R^{n\times n}$, if $\rank(A)=n$,
     \begin{align*}
@@ -5132,7 +5327,7 @@ Minimum total variation is computed with
     \end{align*}
     with $x^*=A^{-1}(y^*-b)$.
     
-\subsection{Full-Rank Right Pseudo Inverse}
+\subsubsection{Full-Rank Right Pseudo Inverse}
 
     For $A\in\R^{m\times n}$, if $\rank(A)=m$, then
     $A^+ = A^\tp(AA^\tp)^{-1}$, $AA^+=\eye_m$, and
@@ -5157,7 +5352,7 @@ Minimum total variation is computed with
     with $x^*=y^*+A^+b$.  
     \note{This problem is ill-conditioned without constraint.}
 
-\subsection{Full-Rank Left Pseudo Inverse}
+\subsubsection{Full-Rank Left Pseudo Inverse}
 
     For $A\in\R^{m\times n}$, if $\rank(A)=n$, then
     $A^+ = (A^\tp A)^{-1} A^\tp$, $A^+A=\eye _n$, and
@@ -5308,8 +5503,9 @@ Minimum total variation is computed with
     \end{align*}
 
 \clearpage
+\subsection{Partial \QP}
 
-\subsection{2--Norm Simplification}
+\subsection{Linear 2--Norm Decompostion with SVD}
     Consider
     \begin{align*}
         A = \lrs\psv\rrs^\tp.
@@ -5344,6 +5540,85 @@ Minimum total variation is computed with
         x^* = \rrs \psv^{-1} y^* + \rns z^*.
     \end{align*}
 
+    \subsubsection{Polyhedron Decompostion with SVD}
+    Consider the problem
+    \begin{align*}
+        \min_{z\in\R^{n}}\quad J=\frac{1}{2}z^\tp Q z + c^\tp z
+    \end{align*}
+    \begin{align*}
+        \st\quad z\in\poly,
+    \end{align*}
+    with
+    \begin{align*}
+        \mat{A_\ub\\A_\eq} = \lrs \psv \rrs^\tp.
+    \end{align*}
+    Let
+    \begin{align*}
+        z&=\rns x + \rrs y \\
+        &= \mat{\rns & \rrs}\mat{x \\ y}.
+    \end{align*}
+    The problem becomes 
+    \begin{align*}
+        \min_{y\in\R^r}\min_{x\in\R^{n-r}}\quad J=
+        \frac{1}{2}\mat{x \\ y}^\tp 
+        \mat{\rns^\tp Q \rns & \rns^\tp Q \rrs \\ 
+        \rrs^\tp Q \rns & \rrs^\tp Q \rrs} 
+        \mat{x \\ y} 
+        +  \mat{\rns^\tp c \\ \rrs^\tp c}^\tp\mat{x \\ y}
+    \end{align*}
+    \begin{align*}
+        \st \quad\rrs y\in\poly
+    \end{align*}
+    
+    \subsubsection{Sum of Squares Decomposition}
+    
+        If $A\in\sym^n$, $D\in\sym^m$, and $B\in\R^{n\times m}$, then
+    
+        \begin{align}
+            \mat{x\\y}^\tp \mat{A & B \\ B^\tp & D}\mat{x\\y} =
+            (x+A^{-1}By)^\tp A (x+A^{-1}By)+y^\tp(D-B^\tp A^{-1} B)y.
+        \end{align}
+    
+        This gives a test for global positivity with
+    
+            \begin{align*}
+                \mat{A&B\\B^\tp & D } \in \sym_+^{n+m}\quad 
+                \Leftrightarrow \quad A\in\sym_+^n \quad \text{and}\quad D-B^\tp A^{-1}B\in\sym_+^m.
+            \end{align*}
+            
+        This can be applied recursively to certify non--negativity.
+    
+    \subsubsection{Partial Min}
+        If $A\in\sym_+^n$, then partial quadratic optimization can be computed with
+    
+        \begin{align*}
+            \min_{x\in\R^n}\quad 
+            J&=\mat{x\\y}^\tp \mat{A & B \\ B^\tp & D}\mat{x\\y} \\
+            &=
+            y^\tp(D-B^\tp A^{-1} B)y,
+        \end{align*}
+        where
+        \begin{align*}
+            x^*&=-A^{-1}By.
+        \end{align*}
+    
+        The problem
+
+        \begin{align*}
+            \min_{y\in\R^m}\quad 
+            J(x^*,y)
+        \end{align*}
+        \begin{align*}
+            \st\quad y\in\poly,
+        \end{align*}
+        becomes
+        \begin{align*}
+            \min_{y\in\R^m}\quad 
+            J&=y^\tp(D-B^\tp A^{-1} B)y
+        \end{align*}
+        \begin{align*}
+            \st\quad y\in\poly.
+        \end{align*}
 \clearpage
 
 \section{Solvers}
@@ -5378,15 +5653,15 @@ Minimum total variation is computed with
         A x &= b,
     \end{align*}
     which is equivalent to
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad J&=f_0(x)+\sum_{i=1}^{m} \ind(f_i(x)\leq 0)\\
-        \st\quad A x &= b.
-    \end{align*}
+        \st\quad A x &= b.\nonumber
+    \end{align}
     For $t>0$, this objective function can be approximated by the log--barrier with
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad J&=f_0(x)+\sum_{i=1}^{m} -\frac{1}{t}\log(-f_i(x))\\
-        \st\quad A x &= b.
-    \end{align*}
+        \st\quad A x &= b.\nonumber
+    \end{align}
     Let
     \begin{align}
         h(x)&=-\sum_{i=1}^m \log(-f_i(x)).\label{eqn:log_barrier}
@@ -5394,7 +5669,7 @@ Minimum total variation is computed with
     Then,
     \begin{align*}
         \grad h &= -\sum_{i=1}^m \frac{1}{f_i}\grad f_i\\
-        \grad^2 h &= -\sum_{i=1}^m \frac{1}{f_i}\grad^2 f_i+
+        \hess(h) &= -\sum_{i=1}^m \frac{1}{f_i}\hess(f_i)+
         \sum_{i=1}^m \frac{1}{f_i^2}(\grad f_i)(\grad f_i)^\tp        
     \end{align*}
 
@@ -5414,7 +5689,7 @@ Minimum total variation is computed with
         {
             \begin{itemize}
                 \item $x\leftarrow \argmin{x\in\R^n} \quad tf_0(x)+h(x)\quad \st\quad Ax=b$,
-                \quad\text{where $h$ comes from \ref{eqn:log_barrier}},
+                \quad\text{where $h$ comes from (\ref{eqn:log_barrier})},
                 \item $t\leftarrow s t$.
             \end{itemize}
         }
@@ -5467,7 +5742,7 @@ or
         \grad h(x)&=\sum_{i=0}^{m-1} \frac{a_i}{b_i-a_i^\tp x}
         \\&=A_\ub^\tp \col\{d_i\}_{i=0}^{m-1},
         \\\\
-        \grad^2 h(x)&=\sum_{i=0}^{m-1} \frac{a_ia_i^\tp}{(b_i-a_i^\tp x)^2}
+        \hess(h)&=\sum_{i=0}^{m-1} \frac{a_ia_i^\tp}{(b_i-a_i^\tp x)^2}
         \\&=A_\ub^\tp \diag\{d_i^2\}_{i=0}^{m-1} A_\ub,
     \end{align*}
     where
@@ -5475,7 +5750,7 @@ or
         d_i=\frac{1}{b_i-a_i^\tp x}.
     \end{align*}
 
-    The equality constraint can be removed using SVD as described in Section
+    The equality constraint can be removed using SVD as described in section
     \ref{sec:rm_eq}
 
     \clearpage
@@ -5490,7 +5765,7 @@ or
         \grad h(x)&=-\sum_{i=0}^{m-1} \frac{\e_i}{x_i}
         =-\col\{x_i^{-1}\}_{i=0}^{m-1},
         \\
-        \grad^2 h(x)&=\sum_{i=0}^{m-1} \frac{\e_i\e_i^\tp}{x_i^2}
+        \hess(h)&=\sum_{i=0}^{m-1} \frac{\e_i\e_i^\tp}{x_i^2}
         =\minus\diag\{x_i^{-2}\}_{i=0}^{m-1}.
     \end{align*}
 
@@ -5503,9 +5778,9 @@ or
     \end{align*}
 
     The regularized Lagrangian is given by 
-    \begin{align*}
+    \begin{align}
         L(x,y,z)&=f(x)+g(y)+z^\tp (Ax+By-c)+\frac{\rho}{2}\|Ax+By-c\|_2^2.
-    \end{align*}
+    \end{align}
     The ADMM is computed with Algorithm \ref{algo:ADMM}.
 
     \begin{algorithm}[H]
@@ -5526,10 +5801,10 @@ or
 \subsection{Scaled ADMM}
 
     The regularized Lagrangian can be expanded with
-    \begin{align*}
-        L(x,y,z)&=f(x)+g(y)+z^\tp (Ax+By-c)+\frac{\rho}{2}\|Ax+By-c\|_2^2\\
+    \begin{align}
+        L(x,y,z)&=f(x)+g(y)+z^\tp (Ax+By-c)+\frac{\rho}{2}\|Ax+By-c\|_2^2\nonumber\\
         &=f(x)+g(y)+\frac{\rho}{2}\|Ax+By-c+u\|_2^2+r,
-    \end{align*}
+    \end{align}
     where
     \begin{align*}
         u = z/\rho.
@@ -5578,7 +5853,7 @@ or
             then
             \begin{align*}
                 x^*_i &= \dz(v_i,\lambda/\rho)\\
-                    &=(x-\lambda/\rho)_+-(-x-\lambda/\rho)_+
+                    &=\hinge(x-\lambda/\rho)-\hinge(-x-\lambda/\rho).
             \end{align*}
 
             This result can be derived from independently optimizing
@@ -5606,7 +5881,7 @@ or
             then
             \begin{align*}
                 \min_{x\in\R^n}\quad J&=\frac{1}{2} x^\tp Q x + c^\tp x+\frac{\rho}{2}\|x-v\|_2^2\\
-                \st\quad x&\in\poly
+                \st\quad x&\in\poly.
             \end{align*}
     \end{itemize}
 
@@ -5618,10 +5893,10 @@ or
         \min_{x\in\R^n}\quad J&=\sum_{i=0}^m f_i(x)
     \end{align*}
     is equivalent to
-    \begin{align*}
-        \min_{x_i\in\R}\quad J&=\sum_{i=0}^m f_i(x_i)\\
-        \st\quad &x_i-z=0.
-    \end{align*}
+    \begin{align}
+        \min_{x_i\in\R^n}\quad J&=\sum_{i=0}^m f_i(x_i)\\
+        \st\quad &x_i-z=0.\nonumber
+    \end{align}
     This problem can be solved with Algorithm \ref{algo:ADMM_consensus}.
 
     \begin{algorithm}[H]
@@ -5662,9 +5937,9 @@ or
         \poly = \bigcap_{i=1}^m \poly_i,
     \end{align*}
     which is equivalent to
-    \begin{align*}
+    \begin{align}
         \min_{x\in\R^n}\quad J&=f_0(x)+\sum_{i=1}^m \ind(x\in \poly_i).
-    \end{align*}
+    \end{align}
 
 \subsection{Logistic Regression}
 
@@ -5675,88 +5950,9 @@ or
         x_j&-z=0.
     \end{align*}
 
-\clearpage
-\subsection{Partial \QP}
-\subsubsection{Decompostion with SVD}
-Consider the problem
-\begin{align*}
-    \min_{z\in\R^{n}}\quad J=\frac{1}{2}z^\tp Q z + c^\tp z
-\end{align*}
-\begin{align*}
-    \st\quad z\in\poly,
-\end{align*}
-with
-\begin{align*}
-    \mat{A_\ub\\A_\eq} = \lrs \psv \rrs^\tp.
-\end{align*}
-Let
-\begin{align*}
-    z&=\rns x + \rrs y \\
-    &= \mat{\rns & \rrs}\mat{x \\ y}.
-\end{align*}
-The problem becomes 
-\begin{align*}
-    \min_{y\in\R^r}\min_{x\in\R^{n-r}}\quad J=
-    \frac{1}{2}\mat{x \\ y}^\tp 
-    \mat{\rns^\tp Q \rns & \rns^\tp Q \rrs \\ 
-    \rrs^\tp Q \rns & \rrs^\tp Q \rrs} 
-    \mat{x \\ y} 
-    +  \mat{\rns^\tp c \\ \rrs^\tp c}^\tp\mat{x \\ y}
-\end{align*}
-\begin{align*}
-    \st \quad\rrs y\in\poly
-\end{align*}
 
-\subsubsection{Sum of Squares Decomposition}
 
-    If $A\in\sym^n$, $D\in\sym^m$, and $B\in\R^{n\times m}$, then
-
-    \begin{align*}
-        \mat{x\\y}^\tp \mat{A & B \\ B^\tp & D}\mat{x\\y} =
-        (x+A^{-1}By)^\tp A (x+A^{-1}By)+y^\tp(D-B^\tp A^{-1} B)y.
-    \end{align*}
-
-    This gives a test for global positivity with
-
-        \begin{align*}
-            \mat{A&B\\B^\tp & D } \in \sym_+^{n+m}\quad 
-            \Leftrightarrow \quad A\in\sym_+^n \quad \text{and}\quad D-B^\tp A^{-1}B\in\sym_+^m.
-        \end{align*}
-        
-    This can be applied recursively to certify non--negativity.
-
-\subsubsection{Partial Min}
-    If $A\in\sym_+^n$, then partial quadratic optimization can be computed with
-
-    \begin{align*}
-        \min_{x\in\R^n}\quad 
-        J&=\mat{x\\y}^\tp \mat{A & B \\ B^\tp & D}\mat{x\\y} \\
-        &=
-        y^\tp(D-B^\tp A^{-1} B)y,
-    \end{align*}
-    where
-    \begin{align*}
-        x^*&=-A^{-1}By.
-    \end{align*}
-
-    The problem
-    \begin{align*}
-        \min_{y\in\R^m}\quad 
-        J(x^*,y)
-    \end{align*}
-    \begin{align*}
-        \st\quad y\in\poly,
-    \end{align*}
-    becomes
-    \begin{align*}
-        \min_{y\in\R^m}\quad 
-        J&=y^\tp(D-B^\tp A^{-1} B)y
-    \end{align*}
-    \begin{align*}
-        \st\quad y\in\poly.
-    \end{align*}
-
-\clearpage
+\clearpage 
 
 \section{Appendix}
 
@@ -5941,12 +6137,12 @@ The problem becomes
     \begin{align*}
         \E{\rand{A}\otimes\rand{B}} = \E{\rand{A}}\otimes\E{\rand{B}}.
     \end{align*}
-    For $x_i\in\R^{n_i}$ and $y_i\in\R^{n_i}$,
+    For $x_i\in\R^{n_i}$, $y_i\in\R^{n_i}$, and $m\in\Z_+$,
     \begin{align*}
-        \textstyle\prod_{i=0}^{q-1} y_i^\tp x_i 
-        &=  \left(\textstyle\bigotimes_{i=0}^{q-1} y_i^\tp\right)\left(\textstyle\bigotimes_{i=0}^{q-1} x_i\right)
-        \\
-        &= \left(\textstyle\bigotimes_{i=0}^{q-1} y_i\right)^\tp\left(\textstyle\bigotimes_{i=0}^{q-1} x_i\right).
+        \textstyle\prod_{i=0}^{m-1} x_i^\tp y_i 
+        &=  \left(\textstyle\bigotimes_{i=0}^{m-1} x_i^\tp\right)\left(\textstyle\bigotimes_{i=0}^{m-1} y_i\right)
+= \left(\textstyle\bigotimes_{i=0}^{m-1} x_i\right)^\tp\left(\textstyle\bigotimes_{i=0}^{m-1} y_i\right),\\
+(x^\tp y)^m &= \left(\textstyle\bigotimes_{i=0}^{m-1} x\right)^\tp\left(\textstyle\bigotimes_{i=0}^{m-1} y_{\:}\right).
     \end{align*}
 
 \subsection{Vectorization}
@@ -5960,13 +6156,17 @@ The problem becomes
         \\
         A_{m1} & \cdots & A_{mn}}&=\mat{A_{11} & \cdots & A_{1n} & \cdots & A_{m1} & \cdots & A_{mn}}^\tp,
     \end{align*}
-    with
+    For $a\in\R^n$ and $b\in\R^m$, $[ab^\tp]_{ij} = a_ib_j$.
+
+    For $a_i\in\R^m$,
+    $b_i\in\R^n$, 
+    $A=\col\{a_i\}_i$, $B=\col\{b_i\}_i$,
     \begin{align*}
-        \vecf{A^{\phantom{\tp}}} & = (\eye_m \otimes A^\tp)\vec{\eye}_m
-        = (A^{\phantom{\tp}} \otimes \eye_{n\:})\vec{\eye}_{n\:},\\
-        \vecf{A^\tp} 
-        &=(\eye_{n\:} \otimes A^{\phantom{\tp}})\vec{\eye}_{n\:}
-        = (A^\tp \otimes \eye_m)\vec{\eye}_m.
+        [AB^\tp]_{ij}
+    =\left[\sum_k a_kb_k^\tp\right]_{ij}
+        =\sum_k\left[a_kb_k^\tp\right]_{ij}
+        = \sum_k \left[a_k\right]_i\left[a_k\right]_j
+        = \sum_k A_{ik}B_{jk}.
     \end{align*}
     The inverse operation is defined by
     \begin{align*}
@@ -6007,6 +6207,16 @@ The problem becomes
     \begin{align*}
         \mathrm{vec}\mat{A\\B}&=\mat{\vec{A}\\\vec{B}}.
     \end{align*}
+
+    \subsection{Hadamard}
+    The Hadamard Product computes element-wise multiplication with
+    \begin{align*}
+        A \circ B = C\quad \Leftrightarrow \quad \diag(\vec{A})\vec{B}=\diag(\vec{B})\vec{A}=\vec{C},
+    \end{align*}
+    \begin{align*}
+        (A\otimes B)\circ(C\otimes D) = (A\circ C)\otimes (B\circ D).
+    \end{align*}
+
 \subsection{Trace}
     For $A\in\R^{n\times n}$,
     \begin{align*}
@@ -6029,18 +6239,6 @@ The problem becomes
     For $x\in\R^n$,
     \begin{align*}
         \trace{xx^\tp}=x^\tp x.
-    \end{align*}
-    For $a\in\R^n$ and $b\in\R^m$, $[ab^\tp]_{ij} = a_ib_j$.
-
-    For $a_i\in\R^m$,
-    $b_i\in\R^n$, 
-    $A=\col\{a_i\}_i$, $B=\col\{b_i\}_i$,
-    \begin{align*}
-        [AB^\tp]_{ij}
-    =\left[\sum_k a_kb_k^\tp\right]_{ij}
-        =\sum_k\left[a_kb_k^\tp\right]_{ij}
-        = \sum_k \left[a_k\right]_i\left[a_k\right]_j
-        = \sum_k A_{ik}B_{jk}.
     \end{align*}
 \subsection{2--Norm}
     For $A\in\R^{m\times n}$ and $x\in\R^{n}$,
@@ -6096,8 +6294,9 @@ The problem becomes
 
     For $A\in\sym^n$ and $B\in\sym^n$,
     \begin{align*}
-        A&\succeq B\quad\Leftrightarrow\quad A-B\succeq 0,\\
-        A&\succ B\quad\Leftrightarrow\quad A-B\succ 0.
+        A\succeq B\quad&\Leftrightarrow\quad A-B\succeq 0,\\
+        A\succ B\quad&\Leftrightarrow\quad A-B\succ 0,\\
+        \tr(AB)\geq 0 \quad \text{for all} \quad A\succeq0 \quad &\Leftrightarrow \quad B\succeq 0.
     \end{align*}
 
 \clearpage
@@ -6113,6 +6312,8 @@ The problem becomes
     \end{align*}
     For $A\in\R^{m\times n}$ and $p\in\R_+$,
     \begin{align*}
+        A&=U_+S_+V_+^\tp\quad\text{with SVD}&&\text{and}\quad A^+=V_+S_+^{-1}U_+^\tp,\\
+        A^+&=\lim_{\sigma\to0}(A^\tp A+\sigma\eye_n)^{-1} A^\tp&&\text{and}\quad A^+=\lim_{\sigma\to0}A^\tp(AA^\tp+\sigma\eye_m)^{-1},\\
         A^{\phantom{+}}&=(A^+)^+\\
         &=A(A^+A)^p&&\text{and}\quad A=(AA^+)^pA,\\
         A^+&=(A^\tp A)^+ A^\tp&&\text{and}\quad A^+=A^\tp(AA^\tp)^+,\\
@@ -6121,7 +6322,7 @@ The problem becomes
         (A^\tp A)^+&=A^+A^{+\tp},&&\text{and}\quad (AA^\tp)^+=A^{+\tp}A^+,\\
         (A^+A)^p&=A^+A,&&\text{and}\quad (AA^+)^p=AA^+,\\
         \tr(AA^+)&=\rank(A),\\
-        (\eye_n-A^+A)^p&=\eye_n-A^+A,&&\text{and}\quad (\eye_m-AA^+)^p=\eye_m-AA^+\\
+        (\eye_n-A^+A)^p&=\eye_n-A^+A,&&\text{and}\quad (\eye_m-AA^+)^p=\eye_m-AA^+,\\
         (AB)^+&=(A^+AB)^+(ABB^+)^+,\\
         \mat{A&B}^+&=\mat{((\eye-BB^+)A)^+ \\ ((\eye-AA^+)B)^+},\\
         \mat{A & \zeros \\ \zeros & B }^+&=\mat{A^+ & \zeros \\ \zeros & B^+ }.
@@ -6148,7 +6349,7 @@ The problem becomes
         E&=(A-BD^{-1}C)^{-1} =A^{-1}+A^{-1}BFCA^{-1},\\
         F&=(D-CA^{-1}B)^{-1} =D^{-1}+D^{-1}CEBD^{-1}.
     \end{align*}
-    For $A\in\sym_+^n$, 
+    For $A\in\sym_+^n$, $b\in\R^n$, and $d\in\R$,
     \begin{align*}    
         \mat{A & b \\ b^\tp  & d}^{-1}&=\mat{
             E&-Ebd^{-1}\\
@@ -6187,11 +6388,11 @@ The problem becomes
         \end{align*}
         where
         \begin{align*}
-            \pd{f}{x} = \grad f^\tp.
+            \pd{f}{x} = \grad^\tp f\quad=\quad \sum_{i=0}^{n-1}\pdLARGE{f}{x_i}\e_i^\tp
         \end{align*}
         The Hessian is 
         \begin{align*}
-            \grad^2 f&=\left[\begin{array}{ccc}
+            \hess(f)&:=\left[\begin{array}{ccc}
             \pdLARGE{}{x_0}\pdLARGE{f}{x_0} & \cdots & \pdLARGE{}{x_{n-1}}\pdLARGE{f_0}{x_0}\\
             \vdots & & \vdots\\
             \pdLARGE{}{x_0}\pdLARGE{f}{x_{n-1}} & \cdots & \pdLARGE{}{x_{n-1}}\pdLARGE{f}{x_{n-1}}
@@ -6199,7 +6400,7 @@ The problem becomes
         \end{align*}
         where
         \begin{align*}
-            \grad^2 f &= \pd{}{x}\grad f.
+            \hess(f) &:= \pd{}{x}\grad f \quad=\quad \sum_{i=0}^{n-1}\sum_{j=0}^{n-1}\pddLARGE{f}{x_i}{x_j}\e_i\e_j^\tp.
         \end{align*}
     
     \subsubsection{Vector to Vector}
@@ -6213,21 +6414,16 @@ The problem becomes
         \end{align*}
         where
         \begin{align*}
-            \pd{f}{x}&=\row\left\{\grad f_i^\tp\right\}_{i=0}^{m-1}.
+            \pd{f}{x}&=\row\left\{\grad^\tp f_i\right\}_{i=0}^{m-1}\quad=\quad \sum_{i=0}^{n-1}\pdLARGE{f_\bullet}{x_i}\e_i^\tp.
         \end{align*}
         \note{
             \begin{align*}
                 \vecf{\pd{f}{x}}&=\row\left\{\grad f_i\right\}_{i=0}^{m-1}\in\R^{mn}.
             \end{align*}
         }
-        The second partial is given by
-        \begin{align*}
-            \left\{\pd{}{x_j}\pd{f}{x}\right\}_{j=0}^{n-1}
-            &=\left\{\row\left\{\pd{}{x_j}\grad f_i^\tp\right\}_{i=0}^{m-1}\right\}_{j=0}^{n-1}\in\R^{m\times n\times n}.
-        \end{align*}
         \note{
             \begin{align*}
-                \pd{}{x}\vecf{\pd{f}{x}}&=\row\left\{\grad^2 f_i\right\}_{i=0}^{m-1}\in\R^{mn\times n}.
+                \pd{}{x}\vecf{\pd{f}{x}}&=\row\left\{\hess(f_i)\right\}_{i=0}^{m-1}\in\R^{mn\times n}.
             \end{align*}
         }
     
@@ -6242,7 +6438,7 @@ The problem becomes
         \end{align*}
         The Hessian is 
         \begin{align*}
-            \grad^2 h = g'(f)\grad^2f+g''(f)\grad f\grad f^\tp.
+            \hess(h) = g'(f)\hess(f)+g''(f)\grad f\grad^\tp f.
         \end{align*}
     
         \subsubsection{Vector to Vector to Scalar}
@@ -6258,30 +6454,10 @@ The problem becomes
         The gradient is
         \begin{align*}
             \grad h
-            % &
-            % =\left(\pd{f}{x}\right)^\tp\left(\pd{g}{f}\right)^\tp
-            % \\
             &
-            =\col\{\grad f_i\}_{i=0}^{m-1} \left(\pd{g}{f}\right)^\tp
-            \\
-            % &
-            % =\vecf{\pd{g}{f}\pd{f}{x}}
-            % \\
-            % &
-            % =\left(\pd{g}{f}\otimes \eye_n\right)\vecf{\pd{f}{x}}
-            % \\
-            &
-            =\left(\pd{g}{f}\otimes \eye_n\right)\row\{\grad f_i\}_{i=0}^{m-1}.
+            =\col\{\grad f_i\}_{i=0}^{m-1} \left(\pd{g}{f}\right)^\tp.
         \end{align*}
-        The Hessian is
-        \begin{align*}
-            \grad^2 h
-            % &=
-            % \left(\pd{f}{x}\right)^\tp\pd{}{x}\left(\pd{g}{f}\right)^\tp+
-            % \left(\pd{g}{f}\otimes \eye_n\right)\pd{}{x}\vecf{\pd{f}{x}}\\
-            &=\col\{\grad f_i\}_{i=0}^{m-1}\pd{}{x}\left(\pd{g}{f}\right)^\tp
-            +\left(\pd{g}{f}\otimes \eye_n\right)\row\{\grad^2 f_i\}_{i=0}^{m-1}.
-        \end{align*}
+
     
     \subsubsection{Vector to Vector to Repeated Scalar}
         For $f:\R^n\to\R^m$ and $g:\R\to\R$, let
@@ -6294,43 +6470,116 @@ The problem becomes
         \end{align*}
         with
         \begin{align*}
-            \vecf{\pd{h}{x}}&=\row\{\grad h_i\}_{i=0}^{m-1}\\
-            &=\left(\diag\{g'(f_i)\}_{i=0}^{m-1}\otimes \eye_n\right)\row\{\grad f_i\}_{i=0}^{m-1}\\
-            &=\left(\eye_m\otimes\pd{f}{x}\right)\vecf{\diag\{g'(f_i)\}_{i=0}^{m-1}}.
+            \vecf{\pd{h}{x}}&=\row\{\grad h_i\}_{i=0}^{m-1}.
         \end{align*}
     
         The second partial is
-    
+
         \begin{align*}
-            \left\{\pd{}{x_j}\pd{h}{x}\right\}_{j=0}^{n-1}&=
-            \left\{\diag\left\{g''(f_i)\pd{f_i}{x_j}\right\}_{i=0}^{m-1}\pd{f}{x}
-            +\diag\left\{g'(f_i)\right\}_{i=0}^{m-1}\pd{}{x_j}\pd{f}{x}\right\}_{j=0}^{n-1}\in\R^{m\times n\times n},
-        \end{align*}
-        with
-        \begin{align*}
-            \pd{}{x}\vecf{\pd{h}{x}}&=\row\{\grad^2 h_i\}_{i=0}^{m-1}\\
-            &=\row\{g'(f_i)\grad^2f_i+g''(f_i)\grad f_i\grad f_i^\tp\}_{i=0}^{m-1}.
+            \pd{}{x}\vecf{\pd{h}{x}}&=\row\{\hess(h_i)\}_{i=0}^{m-1}\\
+            &=\row\{g'(f_i)\hess(f_i)+g''(f_i)\grad f_i\grad f_i^\tp\}_{i=0}^{m-1}.
         \end{align*}
 
-    % \subsubsection{Scalar to Vector to Scalar}
-    %     For $h=g(f)$, with $f:\R\to\R^m$ and $g:\R^m\to\R$,
-    %     the gradient is equal to the partial
-    %     \begin{align*}
-    %         \grad h&=\pd{g}{f}\pd{f}{x}\in\R,
-    %     \end{align*}
-    %     where $x\in\R$ and
-    %     \begin{align*}
-    %         \pd{g}{f}\in\R^{1\times m},\quad
-    %         \pd{f}{x}\in\R^{m\times 1}.
-    %     \end{align*}
-    %     The Hessian is equal to the second partial
-    %     \begin{align*}
-    %         \grad^2 h
-    %         =\pd{f}{x}^\tp\frac{\partial^2 g}{\partial^2 f}\pd{f}{x}
-    %             +\pd{g}{f}\frac{\partial^2 f}{\partial^2 x}\in\R.
-    %     \end{align*}
+    \subsubsection{Scalar to Vector to Scalar}
+        For $h=g(f)$, with $f:\R\to\R^m$ and $g:\R^m\to\R$,
+        the gradient is equal to the partial
+        \begin{align*}
+            \grad h&=\pd{g}{f}\pd{f}{x}\in\R,
+        \end{align*}
+        where $x\in\R$ and
+        \begin{align*}
+            \pd{g}{f}\in\R^{1\times m},\quad
+            \pd{f}{x}\in\R^{m\times 1}.
+        \end{align*}
+        The Hessian is equal to the second partial
+        \begin{align*}
+            \hess(h)
+            =\pd{f}{x}^\tp\frac{ g}{ f}\pd{f}{x}
+                +\pd{g}{f}\frac{ f}{ x}\in\R.
+        \end{align*}
+
+        \clearpage
+
+        \subsection{p--Norm}\label{sec:p_norm}
+        For $p\in\R[1,\infty]$, the p--norm is defined by 
+
+        $$\|x\|_p=\left(\textstyle\sum_{i=0}^{n-1}|x_i|^p\right)^{1/p}.$$
+
+        For $a\in\R$ and $\{x,y\}\in\{\R^n,\R^n\}$, 
+        the p--norm obeys the following three axioms 
+        \begin{itemize}
+            \item $\|x+y\|_p\leq \|x\|_p+\|y\|_p$,
+            \item $\|ax\|_p=|a|\|x\|_p$,
+            \item $\|x\|_p=0\:\Leftrightarrow\:x=0$.
+        \end{itemize}
+        
+        \note{If $p\in\R[0,1)$, $\|x\|_p$ does not satisfy the norm axioms.}
+
+        \note{If $p\to0$,
+        \begin{align*}
+            \|x\|_0 &=\textstyle\sum_{i=0}^{n-1}\bin(|x_i|\neq 0).
+        \end{align*}
+        }
+        \note{If $p\to\infty$,
+            \begin{align*}
+                \|x\|_\infty &= \max_i |x_i|.
+            \end{align*}
+        }
+
+        \note{The set $\|x\|_p\leq r$ is convex for all $p\in\R[1,\infty]$.}        
+
+        \subsubsection{p--Norm Volume}
+        If 
+        \begin{align*}
+            S=\{x\in\R^n\:|\:\textstyle\sum_{i=0}^{n-1}|x_i|^{p_i}\leq 1\},
+        \end{align*}
+
+        the volume of $S$ is given by \cite[p.~164]{Dirichlet}
+
+        \begin{align*}
+            V = \frac{\textstyle\prod_{i=0}^{n-1}\Gamma(1+1/p_i)}{\Gamma(1+\textstyle\sum_{i=0}^{n-1}1/p_i)}2^n.
+        \end{align*}
+
+        If 
+        \begin{align*}
+            S=\{x\in\R^n\:|\:\|x\|_p\leq r\},
+        \end{align*}
+
+        the volme of $S$ is proportional to $r^n$ with
+
+        \begin{align*}
+            V=\frac{\Gamma(1/p+1)^n }{\Gamma(n/p+1)}(2r)^n.
+        \end{align*}
+
+        For $p\in\{1,2,\infty\}$,
+        \begin{align*}
+            V_1 = \frac{(2r)^n}{n!},
+            \quad
+            V_2 = \frac{(\sqrt{\pi}r)^n}{\Gamma(n/2+1)},
+            \quad 
+            V_\infty = (2r)^n.
+        \end{align*}
+
+        \note{$V_1 < V_2 < V_\infty$.}\\
+        \note{$V_1/r^n\to V_2/r^n\to0$ as $n\to\infty$.}
+
+        \note{ For all $p$, the volume is concentrated in the outer shell as $n$ goes to infinity. }
+        
+        \subsubsection{Hölder's Inequality}\label{sec:holder}
+
+        For $p\in\R[1,\infty]$ and $q\in\R[1,\infty]$,\\
+        if $1/p+1/q=1$, then 
+
+        \begin{align*}
+            \textstyle\sum_{i=0}^{n-1} |x_iy_i| \leq \|x\|_p\|y\|_q.
+        \end{align*}
+
+        \note{If $p=2$, then $q=2$.}
+
+        \note{If $p=1$, then $q=\infty$.}
 
 \clearpage
+
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{section}{Bibliography} 
@@ -6695,8 +6944,29 @@ The problem becomes
     Machine Learning
     \\
     T. M. Mitchell
+
+    \bibitem{OptTrans}
+    Optimal Transport and Wasserstein Distance 
     \\
-    \\ 
+    \url{http://www.stat.cmu.edu/~larry/=sml/Opt.pdf}
+
+    \bibitem{Tensor}
+    Tensor Analysis with Applications in Mechanics
+    \\
+    L. P. Leedev, M. J. Cloud, V. A. Ereneyev
+
+    \bibitem{dl}
+    Deep Learning
+    \\
+    I. Goodfellow, Y. Bengio, A. Courville
+
+    \bibitem{Dirichlet}
+    Journal de Mathématiques Pures et Appliquées:\\
+    Sur une nouvelle méthode pour la détermination des intégrales multiples.
+    \\
+    M. Lejeune-Dirichlet
+    \\
+    \url{http://sites.mathdoc.fr/JMPA/PDF/JMPA_1839_1_4_A11_0.pdf}
 
 \end{thebibliography}
 
